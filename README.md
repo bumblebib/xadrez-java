@@ -3,9 +3,10 @@
 Para este trabalho de avaliação de Programação Orientada a objetos, implementamos um jogo de Xadrez utilizando a linguagem Java.
 
 ## Classes e Suas Responsabilidades
-
-> [!WARNING] Atenção
-> O detalhamento de métodos estão listados dentro dos arquivos de cada classe em forma de comentários, por favor removê-los após a finalização da classe 💛 
+> ⚠️ **Atenção**
+> 
+>  **O detalhamento de métodos estão listados dentro dos arquivos de cada classe em forma de comentários, por favor removê-los após a finalização da classe** 💛
+>
 
 
 - **Gerenciador** 👩🏽‍🔧: vai criar e disparar o jogo, permitindo que o usuário a escolha de iniciar um jogo do zero, carregar um jogo a partir de um arquivo de texto, cujo o nome será fornecido pelo usuário e salvar um jogo após o encerramento ou interrupção de uma partida. <span style="color: BlueViolet">**Nenhum controle do jogo em si deve ser feito nesta classe.** </span>(Contém a main)
