@@ -29,7 +29,7 @@ Para este trabalho de avaliação de Programação Orientada a objetos, implemen
 
 ---
 
-- **Casa** 🏡**:** Cada casa tem uma cor <span style="color: BlueViolet">**(branco ou preto), uma linha (de 1 a 8) e uma coluna (de “a” a “h”).**</span>  Cada casa pode estar livre ou ocupada por uma peça e deve saber que peça a ocupa.
+- **Casa** 🏡: Cada casa tem uma cor <span style="color: BlueViolet">**(branco ou preto), uma linha (de 1 a 8) e uma coluna (de “a” a “h”).**</span>  Cada casa pode estar livre ou ocupada por uma peça e deve saber que peça a ocupa.
 
 ---
 
