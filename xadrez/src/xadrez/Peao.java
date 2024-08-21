@@ -1,14 +1,14 @@
-package projeto;
+package xadrez;
 
 public class Peao extends Peca {
     
-    public Peao(char cor, boolean estado) {
+    public Peao(String cor, boolean estado) {
         super(cor, estado);
     }
     
     @Override
     public boolean movimentoValido(int linhaO, char colunaO, int linhaD, char colunaD) {
-        if (estado) {
+        if (capturada) {
             
             int dLinha = linhaD - linhaO;
             int dColuna = colunaD - colunaO;
@@ -44,9 +44,8 @@ public class Peao extends Peca {
     }
     
     @Override
-    public String desenha() {
-        if (cor == 'B') return "P";
-        return "p";
+    public String desenho() {
+        return this.cor.equals("branco") ? "♙" : "♟";
     }
 }
    
