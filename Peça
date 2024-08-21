@@ -1,0 +1,22 @@
+package projeto;
+
+public abstract class Peca {
+    
+    protected char cor; //brancas => letra maiúscula, pretas => letra minúscula
+    protected boolean estado; //true => em jogo, false => capturada
+    
+    public Peca(char cor, boolean estado) {
+        this.cor = cor;
+        this.estado = estado;
+    }
+    
+    public abstract boolean movimentoValido(int linhaO, char colunaO, int linhaD, char colunaD);
+    public abstract String desenha();
+    public abstract String caminho(int linhaO, char colunaO, int linhaD, char colunaD);
+    
+    public void capturar() {
+        estado = false;
+    } //a cor não vai mudar mas o estado sim, então ta aí
+    
+    
+}
