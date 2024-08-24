@@ -38,5 +38,23 @@ public class Casa {
         
         return "[]";
     }
+
+    public boolean isOcupada() {
+        return ocupada;
+    }
+
+    public void setOcupada(boolean ocupada) {
+        this.ocupada = ocupada;
+    }
+
+    public Peca getPecaNaCasa() {
+        return pecaNaCasa;
+    }
+
+    public void setPecaNaCasa(Peca pecaNaCasa) {
+        this.pecaNaCasa = pecaNaCasa;
+    }
+    
+    
     
 }
