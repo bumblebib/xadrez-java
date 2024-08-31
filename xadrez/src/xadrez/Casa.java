@@ -2,7 +2,7 @@ package xadrez;
 
 public class Casa {
     
-    private char cor;
+    private String cor;
     private boolean ocupada;
     private int linha;
     private char coluna;
@@ -15,9 +15,9 @@ public class Casa {
         pecaNaCasa = null; //não há peças nela
         
         if(linha%2 == 0 && coluna%2 == 0 || linha%2 != 0 && coluna%2 != 0) {
-            cor = 'P'; //casas com linhas e colunas ímpares ou linhas e colunas pares são pretas
+            cor = "preto"; //casas com linhas e colunas ímpares ou linhas e colunas pares são pretas
         } else {
-            cor = 'B'; //par com ímpar é branco
+            cor = "branco"; //par com ímpar é branco
         }
     }
     
@@ -55,6 +55,12 @@ public class Casa {
         this.pecaNaCasa = pecaNaCasa;
     }
     
+    public int getLinha(){
+        return this.linha;
+    }
     
+    public char getColuna(){
+        return this.coluna;
+    }
     
 }

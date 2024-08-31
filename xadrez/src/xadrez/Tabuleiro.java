@@ -59,10 +59,14 @@ public class Tabuleiro {
         }
     }
     
-    public boolean noLimite(int linha, char coluna) {
-        if(linha < 1 || linha > 8) return false; //linha é válido de 1 a 8
-        if(coluna < 'a' || coluna > 'h') return false; //coluna de 'a' a 'h'
+    public boolean noLimite(Casa casa) {
+        if(casa.getLinha() < 1 || casa.getLinha() > 8) return false; //linha é válido de 1 a 8
+        if(casa.getColuna() < 'a' || casa.getColuna() > 'h') return false; //coluna de 'a' a 'h'
         return true;
+    }
+    
+    public Peca getPeca(Casa posicao){
+        return posicao.getPecaNaCasa();
     }
     
 }

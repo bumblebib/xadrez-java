@@ -1,23 +1,32 @@
+/*
+    A jogada: 
+    - conhece o tabuleiro 
+    - cria um caminho (composição) -> não sei como 
+    - tem um jogador (agregação)
+
+*/
 package xadrez;
 
 public class Jogada {
-  private final Jogador jogador; // jogador que está realizando a jogada
-  private final String posicaoInicial; 
-  private final String posicaoFinal;
-  private final String caminho; // caminho que a peça percorre da posição inicial até a posição final
+  private Jogador jogador; // jogador que está realizando a jogada
+  private Tabuleiro tabuleiro;
+  private Caminho caminho; // caminho que a peça percorre da posição inicial até a posição final
 
   // uma vez que a jogada é criada, ela não pode ser alterada
-  public Jogada(Jogador jogador, String posicaoInicial, String posicaoFinal, String caminho) {
-    this.jogador = jogador;
-    this.posicaoInicial = posicaoInicial;
-    this.posicaoFinal = posicaoFinal;
-    this.caminho = caminho;
+  public Jogada(Jogador jogador, int linhaO, char colunaO, int linhaD, char colunaD) {
+    /*
+        a posicao inicial e a posicao final da jogada são casas no tabuleiro
+        Esse tabuleiro não é criado na classe jogada, a classe jogada apenas conhece o tabuleiro
+        O caminho é CRIADO dentro da casa jogada a partir das casas informadas para o tabuleiro
+        A jogada recebe um jogador já existente (não cria a classe jogador)
+     */
+    
   }
 
   // verifica se a jogada é válida
   public boolean ehValida(Tabuleiro tabuleiro) {
     // verifica se as posições estão dentro dos limites do tabuleiro
-    if (!tabuleiro.estaDentroDosLimites(posicaoInicial) || !tabuleiro.estaDentroDosLimites(posicaoFinal)) {
+    if (!tabuleiro.noLimite(posicaoInicial) || !tabuleiro.noLimite(posicaoFinal)) {
       return false;
     }
 
@@ -39,7 +48,7 @@ public class Jogada {
     }
 
     // verifica se o movimento é válido para a peça
-    return pecaInicial.movimentoEhValido(posicaoInicial, posicaoFinal, caminho);
+    return pecaInicial.movimentoValido(posicaoInicial.getLinha(), posicaoInicial.getColuna(), posicaoFinal.getLinha(), posicaoFinal.getColuna());
   }
 
   // verifica se a jogada resulta em xeque
@@ -67,15 +76,15 @@ public class Jogada {
     return jogador;
   }
 
-  public String getPosicaoInicial() {
+  public Casa getPosicaoInicial() {
     return posicaoInicial;
   }
 
-  public String getPosicaoFinal() {
+  public Casa getPosicaoFinal() {
     return posicaoFinal;
   }
 
-  public String getCaminho() {
+  public Peca getCaminho() {
     return caminho;
   }
 }

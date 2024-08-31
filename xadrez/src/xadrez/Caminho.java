@@ -1,3 +1,9 @@
+/*
+O caminho:
+- tem uma ou mais casas 
+- conhece o tabuleiro -> não consigo alterar para o caminho utilizar o tabuleiro
+*/
+
 package xadrez;
 
 import java.util.ArrayList;
@@ -5,9 +11,19 @@ import java.util.List;
 
 public class Caminho {
     private List<Casa> casas; // Lista de casas que formam o caminho
-    
-    public Caminho() {
+    private Tabuleiro casaInicial;
+    private Tabuleiro casaFinal;
+            
+    public Caminho(Casa inicio, Casa fim) {
         this.casas = new ArrayList<>();
+        /*
+            Na classe tabuleiro é responsável por criar as casas
+            A posição inicial e final são posições no tabuleiro 
+            O caminho são as pessas entre essas duas posições
+            Essas peças são adicionadas na lista casas.
+            
+            Não sei a lógica para receber duas posições na forma de tabuleiro
+        */
     }
     
     // Adiciona uma casa ao caminho

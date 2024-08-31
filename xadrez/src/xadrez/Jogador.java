@@ -7,8 +7,8 @@ import java.util.Scanner;
 public class Jogador {
     private String nome; // nome do jogador
     private String cor; // cor das peças: "branco" ou "preto"
-    private List<String> pecasAtivas; // peças ainda em jogo
-    private List<String> pecasCapturadas; // peças que foram capturadas
+    private List<Peca> pecasAtivas; // peças ainda em jogo
+    private List<Peca> pecasCapturadas; // peças que foram capturadas
 
     // construtor
     public Jogador(String nome, String cor) {
@@ -28,28 +28,28 @@ public class Jogador {
     // oito peões posicionados na frente de todas essas peças
     private void inicializarPecas() {
         if (cor.equals("branco")) {
-            pecasAtivas.add("Torre");
-            pecasAtivas.add("Cavalo");
-            pecasAtivas.add("Bispo");
-            pecasAtivas.add("Rainha");
-            pecasAtivas.add("Rei");
-            pecasAtivas.add("Bispo");
-            pecasAtivas.add("Cavalo");
-            pecasAtivas.add("Torre");
+            pecasAtivas.add(new Torre("branco", false));
+            pecasAtivas.add(new Cavalo("branco", false));
+            pecasAtivas.add(new Bispo("branco", false));
+            pecasAtivas.add(new Dama("branco", false));
+            pecasAtivas.add(new Rei("branco", false));
+            pecasAtivas.add(new Bispo("branco", false));
+            pecasAtivas.add(new Cavalo("branco", false));
+            pecasAtivas.add(new Torre("branco", false));
             for (int i = 0; i < 8; i++) {
-                pecasAtivas.add("Peão");
+                pecasAtivas.add(new Peao("branco", false));
             }
         } else {
-            pecasAtivas.add("Torre");
-            pecasAtivas.add("Cavalo");
-            pecasAtivas.add("Bispo");
-            pecasAtivas.add("Rainha");
-            pecasAtivas.add("Rei");
-            pecasAtivas.add("Bispo");
-            pecasAtivas.add("Cavalo");
-            pecasAtivas.add("Torre");
+            pecasAtivas.add(new Torre("preto", false));
+            pecasAtivas.add(new Cavalo("preto", false));
+            pecasAtivas.add(new Bispo("preto", false));
+            pecasAtivas.add(new Dama("preto", false));
+            pecasAtivas.add(new Rei("preto", false));
+            pecasAtivas.add(new Bispo("preto", false));
+            pecasAtivas.add(new Cavalo("preto", false));
+            pecasAtivas.add(new Torre("preto", false));
             for (int i = 0; i < 8; i++) {
-                pecasAtivas.add("Peão");
+                pecasAtivas.add(new Peao("preto", false));
             }
         }
     }
@@ -62,12 +62,12 @@ public class Jogador {
     }
 
     // retorna uma string com as peças capturadas
-    public String pecasCapturadas() {
-        return String.join(" ", pecasCapturadas);
+    public List<Peca> pecasCapturadas() {
+        return pecasCapturadas;
     }
 
     // remove a peça especificada da lista de peças ativas e adiciona à lista de peças capturadas
-    public void capturarPeca(String peca) {
+    public void capturarPeca(Peca peca) {
         if (pecasAtivas.remove(peca)) {
             pecasCapturadas.add(peca);
         }
@@ -90,11 +90,11 @@ public class Jogador {
         this.cor = cor;
     }
 
-    public List<String> getPecasAtivas() {
+    public List<Peca> getPecasAtivas() {
         return pecasAtivas;
     }
 
-    public List<String> getPecasCapturadas() {
+    public List<Peca> getPecasCapturadas() {
         return pecasCapturadas;
     }
 }
