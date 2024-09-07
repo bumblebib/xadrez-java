@@ -14,9 +14,9 @@ public class Jogada {
   private Casa posicaoFinal; // posição final da jogada
 
   // uma vez que a jogada é criada, ela não pode ser alterada
-  public Jogada(Jogador jogador, int linhaO, char colunaO, int linhaD, char colunaD) {
+  public Jogada(Jogador jogador, Casa inicio, Casa fim) {
       this.jogador = jogador;
-      this.caminho = new Caminho(new Casa(linhaO, colunaO), new Casa(linhaD, colunaD));
+      this.caminho = new Caminho(inicio, fim);
       this.posicaoInicial = caminho.casaInicial();
       this.posicaoFinal = caminho.casaFinal();
   }
@@ -82,7 +82,7 @@ public class Jogada {
                 Casa posicaoDestino = new Casa(linha, coluna);
 
                 // Cria uma jogada hipotética
-                Jogada jogadaTeste = new Jogada(jogador, posicaoAtual.getLinha(), posicaoAtual.getColuna(), posicaoDestino.getLinha(), posicaoDestino.getColuna());
+                Jogada jogadaTeste = new Jogada(jogador, posicaoAtual, posicaoDestino);
 
                 // Verifica se a jogada é válida, incluindo se o caminho está livre
                 if (jogadaTeste.ehValida(tabuleiro) && jogadaTeste.getCaminho().estaLivre()) {
