@@ -9,82 +9,115 @@ package xadrez;
 
 public class Jogada {
   private Jogador jogador; // jogador que está realizando a jogada
-  private Tabuleiro tabuleiro;
   private Caminho caminho; // caminho que a peça percorre da posição inicial até a posição final
+  private Casa posicaoInicial; // posição inicial da jogada
+  private Casa posicaoFinal; // posição final da jogada
 
   // uma vez que a jogada é criada, ela não pode ser alterada
   public Jogada(Jogador jogador, int linhaO, char colunaO, int linhaD, char colunaD) {
-    /*
-        a posicao inicial e a posicao final da jogada são casas no tabuleiro
-        Esse tabuleiro não é criado na classe jogada, a classe jogada apenas conhece o tabuleiro
-        O caminho é CRIADO dentro da casa jogada a partir das casas informadas para o tabuleiro
-        A jogada recebe um jogador já existente (não cria a classe jogador)
-     */
-    
+      this.jogador = jogador;
+      this.caminho = new Caminho(new Casa(linhaO, colunaO), new Casa(linhaD, colunaD));
+      this.posicaoInicial = caminho.casaInicial();
+      this.posicaoFinal = caminho.casaFinal();
   }
 
   // verifica se a jogada é válida
+  // 
   public boolean ehValida(Tabuleiro tabuleiro) {
-    // verifica se as posições estão dentro dos limites do tabuleiro
+    // Verifica se a posição inicial e a posição final estão dentro dos limites do tabuleiro
     if (!tabuleiro.noLimite(posicaoInicial) || !tabuleiro.noLimite(posicaoFinal)) {
       return false;
     }
-
-    // verifica se a peça na posição inicial pertence ao jogador
-    Peca pecaInicial = tabuleiro.getPeca(posicaoInicial);
-    if (pecaInicial == null || !pecaInicial.getCor().equals(jogador.getCor())) {
+    
+    // Verifica se a peça na posição inicial pertence ao jogador que está realizando a jogada
+    if (!tabuleiro.getPeca(posicaoInicial).getCor().equals(jogador.getCor())) {
       return false;
     }
-
-    // verifica se a posição final está livre ou ocupada por uma peça do oponente
-    Peca pecaFinal = tabuleiro.getPeca(posicaoFinal);
-    if (pecaFinal != null && pecaFinal.getCor().equals(jogador.getCor())) {
+    
+    // Verifica se a posição final está livre ou ocupada por uma peça do oponente
+    if (tabuleiro.getPeca(posicaoFinal) != null && tabuleiro.getPeca(posicaoFinal).getCor().equals(jogador.getCor())) {
       return false;
     }
-
-    // verifica se o caminho está livre, caso a peça não possa pular
-    if (!pecaInicial.podePular() && !tabuleiro.caminhoEstaLivre(caminho)) {
+    
+    // Verifica se o caminho está livre, caso a peça não possa pular sobre outras peças
+    if (!caminho.estaLivre()) {
       return false;
     }
-
-    // verifica se o movimento é válido para a peça
-    return pecaInicial.movimentoValido(posicaoInicial.getLinha(), posicaoInicial.getColuna(), posicaoFinal.getLinha(), posicaoFinal.getColuna());
+    
+    // Verifica se o movimento é válido para a peça na posição inicial
+    if (!tabuleiro.getPeca(posicaoInicial).movimentoValido(posicaoInicial.getLinha(), posicaoInicial.getColuna(), posicaoFinal.getLinha(), posicaoFinal.getColuna())) {
+      return false;
+    }
+    
+    return true;
   }
 
   // verifica se a jogada resulta em xeque
   public boolean ehXeque(Tabuleiro tabuleiro) {
-    // simula a jogada e verifica se o rei adversário está em xeque
-    tabuleiro.simulaJogada(posicaoInicial, posicaoFinal);
-    boolean emXeque = tabuleiro.reiEmXeque(jogador.oponente().getCor());
-    // depois de verificar, desfaz a jogada e retorna o resultado 'true' se a jogada resulta em xeque ou 'false' caso contrário
-    tabuleiro.desfazSimulacao();
+    // obtém a cor do jogador atual
+    String corJogador = jogador.getCor();
+    
+    // obtém a posição do rei do jogador atual
+    Casa posicaoRei = tabuleiro.getPosicaoRei(jogador.getCor());
+    
+    // verifica se o rei está em xeque
+    boolean emXeque = tabuleiro.estaEmCheque(corJogador, posicaoRei);
+    
     return emXeque;
   }
-
-  // verifica se a jogada resulta em xeque-mate
+  
   public boolean ehXequeMate(Tabuleiro tabuleiro) {
-    // simula a jogada e verifica se o rei adversário está em xeque-mate
-    // primeiro verifica se a jogada resulta em xeque. Se não for xeque, a jogada não resulta em xeque-mate, então retorna 'false'
-    if (ehXeque(tabuleiro)) { 
-      return !tabuleiro.temMovimentosValidos(jogador.oponente().getCor());
+    // Verifica se o jogador está em xeque
+    if (!ehXeque(tabuleiro)) {
+        return false; // Se não está em xeque, não é xeque-mate
     }
-    return false;
-  }
+
+    // Para cada peça do jogador
+    for (Peca peca : jogador.pecasAtivas()) {
+        Casa posicaoAtual = tabuleiro.getPosicaoPeca(peca);
+
+        // Tenta todas as posições possíveis no tabuleiro
+        for (int linha = 1; linha <= 8; linha++) {
+            for (char coluna = 'A'; coluna <= 'H'; coluna++) {
+                Casa posicaoDestino = new Casa(linha, coluna);
+
+                // Cria uma jogada hipotética
+                Jogada jogadaTeste = new Jogada(jogador, posicaoAtual.getLinha(), posicaoAtual.getColuna(), posicaoDestino.getLinha(), posicaoDestino.getColuna());
+
+                // Verifica se a jogada é válida, incluindo se o caminho está livre
+                if (jogadaTeste.ehValida(tabuleiro) && jogadaTeste.getCaminho().estaLivre()) {
+                    // Realiza a jogada (modificando diretamente o tabuleiro)
+                    tabuleiro.removerPeca(posicaoAtual);
+                    tabuleiro.colocarPeca(peca, posicaoDestino);
+
+                    // Verifica se o rei ainda está em xeque após a jogada
+                    if (!tabuleiro.estaEmCheque(jogador.getCor(), tabuleiro.getPosicaoRei(jogador.getCor()))) {
+                        // Se alguma jogada tira o rei do xeque, não é xeque-mate
+                        // Desfaz a jogada manualmente
+                        tabuleiro.removerPeca(posicaoDestino);
+                        tabuleiro.colocarPeca(peca, posicaoAtual);
+                        return false;
+                    }
+
+                    // Desfaz a jogada (coloca as peças de volta às posições originais)
+                    tabuleiro.removerPeca(posicaoDestino);
+                    tabuleiro.colocarPeca(peca, posicaoAtual);
+                }
+            }
+        }
+    }
+
+    // Se nenhuma jogada possível tira o rei do xeque, é xeque-mate
+    return true;
+}
+
 
   // Getters para as propriedades da jogada
   public Jogador getJogador() {
     return jogador;
   }
 
-  public Casa getPosicaoInicial() {
-    return posicaoInicial;
-  }
-
-  public Casa getPosicaoFinal() {
-    return posicaoFinal;
-  }
-
-  public Peca getCaminho() {
+  public Caminho getCaminho() {
     return caminho;
   }
 }

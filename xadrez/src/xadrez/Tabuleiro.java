@@ -64,9 +64,80 @@ public class Tabuleiro {
         if(casa.getColuna() < 'a' || casa.getColuna() > 'h') return false; //coluna de 'a' a 'h'
         return true;
     }
+
+    public void colocarPeca(Peca peca, Casa casa){
+        casa.ocupar(peca);
+    }
+
+    public void removerPeca(Casa casa){
+        casa.desocupar();
+    }
     
+    public Casa getPosicaoRei(String cor) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                Casa casa = casas[i][j];
+                Peca peca = casa.getPecaNaCasa();
+                if (peca instanceof Rei && peca.getCor().equals(cor)) {
+                    return casa;
+                }
+            }
+        }
+        return null; // Return null if the king is not found
+    }
+
+    public Casa getPosicaoPeca(Peca peca){
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                Casa casa = casas[i][j];
+                if (casa.getPecaNaCasa() == peca) {
+                    return casa;
+                }
+            }
+        }
+        return null; // Return null if the piece is not found
+    }
+
+
+    public boolean estaEmCheque(String cor, Casa posicaoRei) {
+        
+        // Verificar se alguma peça adversária pode atacar o rei
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                Casa casa = casas[i][j];
+                Peca peca = casa.getPecaNaCasa();
+                
+                // Verificar se a peça é do adversário
+                if (peca != null && !peca.getCor().equals(cor)) {
+                    // Verificar se a peça pode atacar a posição do rei
+                    if (peca.movimentoValido(casa.getLinha(), casa.getColuna(), posicaoRei.getLinha(), posicaoRei.getColuna())) {
+                        return true; // O rei está em cheque
+                    }
+                }
+            }
+        }
+        
+        return false; // O rei não está em cheque
+    }
+
     public Peca getPeca(Casa posicao){
         return posicao.getPecaNaCasa();
+    }
+
+    public Casa getCasa(Casa posicao){
+        return casas[posicao.getLinha() - 1][posicao.getColuna() - 97];
+    }
+
+    public String getCaminhoPeca(Casa posicaoInicial, Casa posicaoFinal){
+        Peca peca = posicaoInicial.getPecaNaCasa();
+        if (peca != null) {
+            int linhaO = posicaoInicial.getLinha();
+            char colunaO = posicaoInicial.getColuna();
+            int linhaD = posicaoFinal.getLinha();
+            char colunaD = posicaoFinal.getColuna();
+            return peca.caminho(linhaO, colunaO, linhaD, colunaD);
+        }
+        return null;
     }
     
 }

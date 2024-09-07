@@ -7,8 +7,8 @@ import java.util.Scanner;
 public class Jogador {
     private String nome; // nome do jogador
     private String cor; // cor das peças: "branco" ou "preto"
-    private List<Peca> pecasAtivas; // peças ainda em jogo
-    private List<Peca> pecasCapturadas; // peças que foram capturadas
+    private ArrayList<Peca> pecasAtivas; // peças ainda em jogo
+    private ArrayList<Peca> pecasCapturadas; // peças que foram capturadas
 
     // construtor
     public Jogador(String nome, String cor) {
@@ -62,12 +62,19 @@ public class Jogador {
     }
 
     // retorna uma string com as peças capturadas
-    public List<Peca> pecasCapturadas() {
+    public ArrayList<Peca> pecasCapturadas() {
         return pecasCapturadas;
     }
 
+    // retorna uma string com as peças ativas
+    public ArrayList<Peca> pecasAtivas() {
+        return pecasAtivas;
+    }
+
+    public 
+
     // remove a peça especificada da lista de peças ativas e adiciona à lista de peças capturadas
-    public void capturarPeca(Peca peca) {
+    void capturarPeca(Peca peca) {
         if (pecasAtivas.remove(peca)) {
             pecasCapturadas.add(peca);
         }

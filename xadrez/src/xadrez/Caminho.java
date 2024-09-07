@@ -11,26 +11,32 @@ import java.util.List;
 
 public class Caminho {
     private List<Casa> casas; // Lista de casas que formam o caminho
-    private Tabuleiro casaInicial;
-    private Tabuleiro casaFinal;
+    private Casa casaInicial;
+    private Casa casaFinal;
+    private Tabuleiro tabuleiro;
             
     public Caminho(Casa inicio, Casa fim) {
         this.casas = new ArrayList<>();
-        /*
-            Na classe tabuleiro é responsável por criar as casas
-            A posição inicial e final são posições no tabuleiro 
-            O caminho são as pessas entre essas duas posições
-            Essas peças são adicionadas na lista casas.
-            
-            Não sei a lógica para receber duas posições na forma de tabuleiro
-        */
+        
+        this.casaInicial = inicio;
+        this.casaFinal = fim;
+
+        // pega o caminho entre as duas casas
+        String caminho = this.tabuleiro.getCaminhoPeca(inicio, fim);
+        for(int i = 0; i < caminho.length(); i+=2) {
+            char valor = caminho.charAt(i);
+            int linha = Character.getNumericValue(valor);
+            char coluna = caminho.charAt(i+1);
+            adicionarCasa(new Casa(linha, coluna));
+        }
+        
     }
     
     // Adiciona uma casa ao caminho
     public void adicionarCasa(Casa casa) {
         this.casas.add(casa);
     }
-    
+
     // Verifica se todas as casas no caminho estão livres (exceto a inicial e a final)
     public boolean estaLivre() {
         if (casas.size() <= 2) return true; // Se houver 0 ou 1 casas no caminho, está livre por definição
@@ -68,4 +74,6 @@ public class Caminho {
     public void limparCaminho() {
         casas.clear();
     }
+
+    
 }
