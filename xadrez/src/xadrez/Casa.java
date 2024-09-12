@@ -9,6 +9,9 @@ public class Casa {
     private Peca pecaNaCasa;
     
     public Casa(int linha, char coluna) { //toda casa tem uma linha e uma coluna
+        
+        if(!noLimite(linha, coluna)) throw new IllegalArgumentException("Linha/Coluna fora do intervalo permitido");
+        
         this.linha = linha;
         this.coluna = coluna;
         ocupada = false; //inicialmente ela está vazia
@@ -30,6 +33,9 @@ public class Casa {
     }
     
     public void ocupar(Peca peca) {
+        
+        if(peca == null) throw new IllegalArgumentException("Essa peca nao existe");
+        
         ocupada = true;
         pecaNaCasa = peca; //se a casa for ser ocupada, diga que peça vai pra lá
     }
@@ -57,6 +63,12 @@ public class Casa {
         } 
         
         return "[]";
+    }
+    
+    public boolean noLimite(int linha, char coluna) {
+        if(linha < 1 || linha > 8) return false; //linha é válido de 1 a 8
+        if(coluna < 'a' || coluna > 'h') return false; //coluna de 'a' a 'h'
+        return true;
     }
        
 }

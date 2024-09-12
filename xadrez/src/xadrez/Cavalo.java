@@ -8,6 +8,11 @@ public class Cavalo extends Peca {
     
     @Override
     public boolean movimentoValido(int linhaO, char colunaO, int linhaD, char colunaD) {
+        
+        if(!posicoesValidas(linhaO, colunaO, linhaD, colunaD)) {
+            throw new IllegalArgumentException("Linha/Coluna fora do intervalo permitido");
+        }
+        
         if(emJogo) {
             
             int dLinha = Math.abs(linhaO - linhaD);
@@ -77,5 +82,10 @@ public class Cavalo extends Peca {
     public String desenho() {
         return this.cor.equals("branco") ? "♘" : "♞";
     }*/
+    
+    private boolean posicoesValidas(int linhaO, char colunaO, int linhaD, char colunaD) {
+        return (linhaO >= 1 && linhaO <= 8 && linhaD >= 1 && linhaD <= 8) &&
+        (colunaO >= 'a' && colunaO <= 'h' && colunaD >= 'a' && colunaD <= 'h');
+    } //verifica se as linhas/colunas estao no intervalo valido
     
 }

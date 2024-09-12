@@ -12,28 +12,44 @@ public class Jogador {
 
     // construtor
     public Jogador(String cor) { //tirando o recolhimento de info do jogador de Jogo
-        System.out.println("Jogador, por favor informe seu nome: ");
+        
+        if(!cor.equals("Branco") && !cor.equals("Preto")) {
+            throw new IllegalArgumentException("Essa cor nao e valida");
+        }
+        
+        System.out.print("Jogador, por favor informe seu nome: ");
         nome = leitor.next();
         
         this.cor = cor;
         
-        if(cor.equals("Branco")) System.out.println("" + nome + ", voce eh o jogador 1. Sua cor eh Branco");
-        else System.out.println("" + nome + ", voce eh o jogador 2. Sua cor eh Preto");
+        if(cor.equals("Branco")) System.out.println("" + nome + ", voce eh o jogador 1. Sua cor eh Branco" + '\n');
+        else System.out.println("" + nome + ", voce eh o jogador 2. Sua cor eh Preto" + '\n');
         
         this.pecas = new ArrayList<>();
     }
     
     public Jogador(String cor, String nome) {
+        
+        if(!cor.equals("Branco") && !cor.equals("Preto")) {
+            throw new IllegalArgumentException("Essa cor nao e valida");
+        }
+        
         this.cor = cor;
         this.nome = nome;
         this.pecas = new ArrayList<>();
     }
     
     public void receberPecas(Peca p) {
+        
+        if(p == null) throw new IllegalArgumentException("Essa peca nao existe");
+        
         pecas.add(p);
     }
     
     public boolean ehDoJogador(Peca p) {
+        
+        if(p == null) throw new IllegalArgumentException("Essa peca nao existe");
+        
         if(pecas.contains(p)) return true;
         return false;
     }
@@ -47,6 +63,9 @@ public class Jogador {
 
     //atualiza o estado da peça pra capturada
     public void capturarPeca(Peca peca) {
+        
+        if(peca == null) throw new IllegalArgumentException("Essa peca nao existe");
+        
         peca.capturar();
     }
 

@@ -6,6 +6,11 @@ public abstract class Peca {
     protected boolean emJogo; //true => em jogo, false => capturada
     
     public Peca(String cor) {
+        
+        if(!cor.equals("Branco") && !cor.equals("Preto")) {
+            throw new IllegalArgumentException("Essa cor nao e valida");
+        }
+        
         this.cor = cor;
         emJogo = true;
     }
