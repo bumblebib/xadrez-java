@@ -1,21 +1,3 @@
-/*
- Observação: apenas a parte de comunicação com o usuário necessária para o
-carregamento/salvamento de um jogo e das opções iniciais deve ser feita nessa classe.
-Manipulação de arquivos será vista no roteiro 5.
-Os arquivos para registro dos jogos devem ter o seguinte formato:
-<Nome do Jogador 1 - peças brancas>
-<Nome do Jogador 2 - peças pretas>
-<Jogada 1>
-<Jogada 2>
-<Jogada 3>
-…
-Cada jogada tem a linha e coluna da casa inicial da jogada e a linha e coluna da casa final,
-sem qualquer separação. Por exemplo:
-1a3b
-4c2h
-3g7g
-
- */
 package xadrez;
 
 import java.util.ArrayList;
@@ -23,6 +5,7 @@ import java.util.Scanner;
 import java.io.*;
 import java.io.IOException;
 import java.io.FileNotFoundException;
+import java.util.InputMismatchException;
 
 public class Gerenciador {
     
@@ -30,7 +13,7 @@ public class Gerenciador {
     private Jogo jogo;
     private ArrayList<Jogada> historicoJogadas;
     
-    public static void main(String args[]){
+    public static void main(String args[]){ //acho que ta bom de exceção aqui
         
         Gerenciador g = new Gerenciador();
         
@@ -41,7 +24,7 @@ public class Gerenciador {
     
     public void menuInicial() {
         
-        System.out.println(" ---- Jogo de Xadrez -----");
+        System.out.println(" ---- Jogo de Xadrez -----" + '\n');
         System.out.println("O que deseja fazer? ");
         System.out.println("Opcao 1: Iniciar Novo Jogo");
         System.out.println("Opcao 2: Carregar Jogo");
@@ -52,32 +35,32 @@ public class Gerenciador {
         while(continuar) {
             try {
                 operacao = leitor.nextInt();
-            } catch(IllegalArgumentException exc) {
-                System.out.println("Por favor, digite um numero inteiro");
-            }
-            
+                
             if(operacao == 1 || operacao == 2) continuar = false;
             else System.out.println("Por favor, digite uma opcao valida");
+            
+            } catch(InputMismatchException exc) {
+                System.out.println("Por favor, digite um numero inteiro");
+                leitor.next(); //apagar o buffer
+            }
         }
         
-        switch(operacao) {
+        switch(operacao) { //como já tem uma verificação ali em cima
+            //só vai entrar 1 ou 2 aqui
             
             case 1:
-                System.out.println("Iniciando uma Nova Partida de Xadrez...");
+                System.out.println("Iniciando uma Nova Partida de Xadrez..." + '\n');
                 jogo = new Jogo();
                 jogo.rodarJogo(); //vai rodar sozinho até o jogador digitar parar ou dar xeque-mate
                 
-                querSalvar();
+                querSalvar(); //vai dar a opção de salvar ou não 
                 
                 break;
                 
             case 2:
-                carregarJogo(); //pior que o bagulho é automatico, vou ter que colocar um método diferente pra carregar um pronto
+                carregarJogo(); //método pra carregar o jogo
                 break;
-                
-            default:
-                System.out.println("Por favor, selecione uma opcao valida");
-                break;
+
         }
         
     }
@@ -94,24 +77,26 @@ public class Gerenciador {
         while(continuar) {
             try {
                 salvamento = leitor.nextInt();
-            } catch(IllegalArgumentException exc) {
-                System.out.println("Por favor, digite um numero inteiro");
-            }
-            
+                
             if(salvamento == 1 || salvamento == 2) continuar = false;
             else System.out.println("Por favor, digite uma opcao valida");
             
+            } catch(InputMismatchException exc) {
+                System.out.println("Por favor, digite um numero inteiro");
+                leitor.next(); //limpar o buffer dnv
+            }
+            
         }
         
-        if(salvamento == 1) salvarJogo();
-        else System.out.println("Tudo bem, adeus :/");
+        if(salvamento == 1) salvarJogo(); //se o jogador escolher salvar chama outro método
+        else System.out.println("Tudo bem, adeus :)" + '\n'); //se n, só uma mensagenzinha
         
     }
     
     private void salvarJogo() {
         
         System.out.println("Digite um nome para o Arquivo em que vamos salvar o jogo: ");
-        String nomeArquivo = leitor.next();
+        String nomeArquivo = leitor.next(); //como aqui é uma string, n tem mt como dar InputMismatchException
        
         try {
             File novoArquivo = new File(nomeArquivo);
@@ -125,13 +110,15 @@ public class Gerenciador {
                 escritor.write(jogo.getJogada(i).escrever() + '\n');
             }
             
-            System.out.println("Jogo salvo com sucesso!");
+            System.out.println("Jogo salvo com sucesso!" + '\n');
             
             escritor.close();
         
         } catch(IOException exc) {
             System.out.println("Erro ao escrever no arquivo");
-        } 
+        } catch(IllegalArgumentException exc) {
+            System.out.println("Erro ao escrever no arquivo: " + exc.getMessage());
+        }
     }
     
     private void carregarJogo() {
@@ -139,33 +126,33 @@ public class Gerenciador {
         System.out.println("Digite o nome do Arquivo que deseja carregar: ");
         String nomeArquivo = leitor.next();
         
-        
         try(Scanner leitorArquivo = new Scanner(new File(nomeArquivo))) {
             
-                String primeiraFrase = leitorArquivo.nextLine();
-                String segundaFrase = leitorArquivo.nextLine();
+                String primeiraFrase = leitorArquivo.nextLine(); //a primeira e a segunda linhas sao
+                String segundaFrase = leitorArquivo.nextLine(); //os nomes dos jogadores
                 
                 primeiraFrase = primeiraFrase.replace("<", "").replace(">", "").replace("-", "");
-                segundaFrase = segundaFrase.replace("<", "").replace(">", "").replace("-", "");
+                segundaFrase = segundaFrase.replace("<", "").replace(">", "").replace("-", ""); //tiramos os simbolos especiais
                 String[] nomeJogador1 = primeiraFrase.split("\\s+");
-                String[] nomeJogador2 = segundaFrase.split("\\s+");
+                String[] nomeJogador2 = segundaFrase.split("\\s+"); //separamos as palavras
                 
-                Jogo carregarJogo = new Jogo(nomeJogador1[0], nomeJogador2[0]);
+                Jogo carregarJogo = new Jogo(nomeJogador1[0], nomeJogador2[0]); //criamos um jogo diferente
                 
                 while(leitorArquivo.hasNextLine()) {
                     String jogada = leitorArquivo.nextLine();
                     
                     jogada = jogada.replace("<", "").replace(">", "");
                     
-                    carregarJogo.receberJogada(jogada);
-                } //depois de passar todas as jogadas feitas vai rodar normalmente
+                    carregarJogo.receberJogada(jogada); //refazemos as jogadas do documento
+                } 
                 
-                carregarJogo.rodarJogo();
+                carregarJogo.rodarJogo(); //depois de passar todas as jogadas feitas vai rodar normalmente
                              
-        } catch(FileNotFoundException exc) {
+        } catch(FileNotFoundException exc) { //precisa de um IOException?
             System.out.println("O arquivo nao foi encontrado");
             
-        } 
+        }
+        
     }
     
     

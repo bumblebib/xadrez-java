@@ -10,6 +10,11 @@ public class Peao extends Peca {
     
     @Override
     public boolean movimentoValido(int linhaO, char colunaO, int linhaD, char colunaD) {
+        
+        if(!posicoesValidas(linhaO, colunaO, linhaD, colunaD)) {
+            throw new IllegalArgumentException("Linha/Coluna fora do intervalo permitido");
+        }
+        
         if (emJogo && cor.equals("Branco")) {
             
             int dLinha = linhaD - linhaO;
@@ -34,8 +39,13 @@ public class Peao extends Peca {
     }
     
     public boolean peaoAtaque(int linhaO, char colunaO, int linhaD, char colunaD) {
-        if(linhaD - linhaO == 1 && Math.abs(colunaD - colunaO) == 1) return true; //ele precisa estar indo na diagonal pra frente, n importa dir ou esq
-        return false;
+        if(cor.equals("Branco")) {
+            if(linhaD - linhaO == 1 && Math.abs(colunaD - colunaO) == 1) return true; //ele precisa estar indo na diagonal pra frente, n importa dir ou esq
+        
+        } else {
+            if(linhaD - linhaO == -1 && Math.abs(colunaD - colunaO) == 1) return true;
+        }
+            return false;
     }
     
     @Override
@@ -69,5 +79,9 @@ public class Peao extends Peca {
         return this.cor.equals("branco") ? "♙" : "♟";
     }*/
     
+    private boolean posicoesValidas(int linhaO, char colunaO, int linhaD, char colunaD) {
+        return (linhaO >= 1 && linhaO <= 8 && linhaD >= 1 && linhaD <= 8) &&
+        (colunaO >= 'a' && colunaO <= 'h' && colunaD >= 'a' && colunaD <= 'h');
+    } //verifica se as linhas/colunas estao no intervalo valido
+    
 }
-   

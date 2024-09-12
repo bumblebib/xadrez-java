@@ -8,6 +8,11 @@ public class Bispo extends Peca {
     
     @Override 
     public boolean movimentoValido(int linhaO, char colunaO, int linhaD, char colunaD) {
+        
+        if(!posicoesValidas(linhaO, colunaO, linhaD, colunaD)) {
+            throw new IllegalArgumentException("Linha/Coluna fora do intervalo permitido");
+        } 
+        
         if (emJogo) {
             
             int dLinha = Math.abs(linhaO - linhaD);
@@ -23,7 +28,7 @@ public class Bispo extends Peca {
     
     @Override 
     public String caminho(int linhaO, char colunaO, int linhaD, char colunaD) {
-        if (movimentoValido(linhaO, colunaO, linhaD, colunaD)) {
+        if (movimentoValido(linhaO, colunaO, linhaD, colunaD)) { //já vai fzr a verificação da exceção em movimentoValido
             
             StringBuilder percurso = new StringBuilder();
             percurso.append(linhaO).append(colunaO);
@@ -59,5 +64,10 @@ public class Bispo extends Peca {
        return this.cor.equals("branco") ? "♗" : "♝";
     } */
     
-    
+    private boolean posicoesValidas(int linhaO, char colunaO, int linhaD, char colunaD) {
+        return (linhaO >= 1 && linhaO <= 8 && linhaD >= 1 && linhaD <= 8) &&
+        (colunaO >= 'a' && colunaO <= 'h' && colunaD >= 'a' && colunaD <= 'h');
+    } //verifica se as linhas/colunas estao no intervalo valido
+   
 }
+
