@@ -1,123 +1,152 @@
-/*
-    A jogada: 
-    - conhece o tabuleiro 
-    - cria um caminho (composição) -> não sei como 
-    - tem um jogador (agregação)
-
-*/
 package xadrez;
+import java.util.ArrayList;
+
+//xeque só pra jogada efetuada agr
+//a prof falou pra fzr xeque mate sem passar pelo tabuleiro, pegando as peças do jogador direto
+//mas n tem como, a peça n sabe onde esta pra eu usar o movimentoValido
 
 public class Jogada {
-  private Jogador jogador; // jogador que está realizando a jogada
-  private Caminho caminho; // caminho que a peça percorre da posição inicial até a posição final
-  private Casa posicaoInicial; // posição inicial da jogada
-  private Casa posicaoFinal; // posição final da jogada
-
-  // uma vez que a jogada é criada, ela não pode ser alterada
-  public Jogada(Jogador jogador, Casa inicio, Casa fim) {
-      this.jogador = jogador;
-      this.caminho = new Caminho(inicio, fim);
-      this.posicaoInicial = caminho.casaInicial();
-      this.posicaoFinal = caminho.casaFinal();
-  }
-
-  // verifica se a jogada é válida
-  // 
-  public boolean ehValida(Tabuleiro tabuleiro) {
-    // Verifica se a posição inicial e a posição final estão dentro dos limites do tabuleiro
-    if (!tabuleiro.noLimite(posicaoInicial) || !tabuleiro.noLimite(posicaoFinal)) {
-      return false;
+    
+    private Tabuleiro tabuleiro; //jogada conhece tabuleiro, o jogador que ta fznd a jogada
+    private Jogador jogador; //e constroi o caminho
+    private Caminho caminho;
+    private int linhaO;
+    private int linhaD;
+    private char colunaO;
+    private char colunaD;
+    
+    public Jogada(int linhaO, char colunaO, int linhaD, char colunaD, Jogador jog, Tabuleiro tab) {
+        tabuleiro =  tab;
+        jogador = jog;
+        this.linhaO = linhaO;
+        this.linhaD = linhaD;
+        this.colunaO = colunaO;
+        this.colunaD = colunaD;
+        caminho = new Caminho(tabuleiro.getCasa(linhaO, colunaO), tabuleiro.getCasa(linhaD, colunaD));
     }
     
-    // Verifica se a peça na posição inicial pertence ao jogador que está realizando a jogada
-    if (!tabuleiro.getPeca(posicaoInicial).getCor().equals(jogador.getCor())) {
-      return false;
+    public boolean ehValida() {
+        //se uma das casas esta fora dos limites do tabuleiro, invalido
+        if(!tabuleiro.noLimite(linhaO, colunaO) || !tabuleiro.noLimite(linhaD, colunaD)) return false;
+        
+        //se a casa inicial nao estiver ocupada, que peça o abençoado vai mexer
+        if(!caminho.getCasaInicial().estaOcupada()) return false; 
+        
+        //se a peça da casa incial nao for do jogador aqui
+        if(!jogador.ehDoJogador(caminho.getCasaInicial().getPeca())) return false;
+        
+        //se a peça na última casa for do próprio jogador (tu quer se capturar eh)
+        if(jogador.ehDoJogador(caminho.getCasaFinal().getPeca())) return false;
+        
+        //se a peça em questão for um peão, e a casa que ele quer ir esta ocupada, temos que fzr uma verificação diferente
+        if(caminho.getCasaInicial().getPeca() instanceof Peao && caminho.getCasaFinal().estaOcupada()) {
+            Peao peao = (Peao) caminho.getCasaInicial().getPeca();
+            if(peao.peaoAtaque(linhaO, colunaO, linhaD, colunaD) && !jogador.ehDoJogador(caminho.getCasaFinal().getPeca())) return true;
+            return false; 
+        }
+        
+        //por fim, se a peça nao pode fzr esse movimento, inválido
+        if(!caminho.getCasaInicial().getPeca().movimentoValido(linhaO, colunaO, linhaD, colunaD)) return false;
+        
+        criarCaminho(); //se estiver tudo ok, criamos caminho
+        //se o caminho nao esta livre e a peça em questão não é o cavalo, então esse movimento eh invalido
+        if(!(caminho.getCasaInicial().getPeca() instanceof Cavalo) && !caminho.estaLivre()) return false;
+        
+        
+        return true; //se passar por tudo isso, eh valido
+        
     }
     
-    // Verifica se a posição final está livre ou ocupada por uma peça do oponente
-    if (tabuleiro.getPeca(posicaoFinal) != null && tabuleiro.getPeca(posicaoFinal).getCor().equals(jogador.getCor())) {
-      return false;
+    public boolean ehXeque(Jogador oponente) {
+        
+        Casa casaRei = tabuleiro.acharRei(oponente.getCor()); //achando o rei do oponente
+        
+        if(caminho.getCasaInicial().getPeca() instanceof Peao) { //se a peça movida é um peao
+            Peao peao = (Peao) caminho.getCasaInicial().getPeca();
+            if(peao.peaoAtaque(linhaD, colunaD, casaRei.getLinha(), casaRei.getColuna())) return true;
+            return false;
+        } //se nao for peao, faz a verificação geral
+        
+        if(caminho.getCasaInicial().getPeca().movimentoValido(linhaD, colunaD, casaRei.getLinha(), casaRei.getColuna())) {
+            return true; 
+        } //se a peça movida, pode alcançar o rei do oponente da posição pra onde foi movida, então é xeque
+        
+        return false;
+        
     }
     
-    // Verifica se o caminho está livre, caso a peça não possa pular sobre outras peças
-    if (!caminho.estaLivre()) {
-      return false;
+    public boolean ehXequeMate(Jogador oponente) {
+        
+        Casa casaRei = tabuleiro.acharRei(oponente.getCor()); //achando o rei do oponente novamente
+        
+        int linhaRei = casaRei.getLinha();
+        char colunaRei = casaRei.getColuna();
+        
+        ArrayList<Jogada> testeRei = new ArrayList<>();
+        testeRei.add(new Jogada(linhaRei, colunaRei, linhaRei + 1, colunaRei, oponente, tabuleiro));
+        testeRei.add(new Jogada(linhaRei, colunaRei, linhaRei, (char)(colunaRei + 1), oponente, tabuleiro));
+        testeRei.add(new Jogada(linhaRei, colunaRei, linhaRei - 1, colunaRei, oponente, tabuleiro));
+        testeRei.add(new Jogada(linhaRei, colunaRei, linhaRei, (char)(colunaRei - 1), oponente, tabuleiro));
+        testeRei.add(new Jogada(linhaRei, colunaRei, linhaRei + 1, (char)(colunaRei + 1), oponente, tabuleiro));
+        testeRei.add(new Jogada(linhaRei, colunaRei, linhaRei - 1, (char)(colunaRei - 1), oponente, tabuleiro));
+        testeRei.add(new Jogada(linhaRei, colunaRei, linhaRei + 1, (char)(colunaRei - 1), oponente, tabuleiro));
+        testeRei.add(new Jogada(linhaRei, colunaRei, linhaRei - 1, (char)(colunaRei + 1), oponente, tabuleiro));
+        //criando as 8 jogadas possiveis do rei oponente
+        
+        for(Jogada j: testeRei) { //para cada jogada possivel do rei oponente
+            if(j.ehValida() && !j.procurandoXequeMate()) { //se ela for, ao msm tempo, valida e nao houver nenhuma peça atacando a posição dela
+                return false; //nao é xeque mate
+            }
+        }
+        
+        return true; //se passar por todas as jogadas sem achar uma que seja valida e que esteja livre de ataque, xeque mate
+        
     }
     
-    // Verifica se o movimento é válido para a peça na posição inicial
-    if (!tabuleiro.getPeca(posicaoInicial).movimentoValido(posicaoInicial.getLinha(), posicaoInicial.getColuna(), posicaoFinal.getLinha(), posicaoFinal.getColuna())) {
-      return false;
-    }
-    
-    return true;
-  }
-
-  // verifica se a jogada resulta em xeque
-  public boolean ehXeque(Tabuleiro tabuleiro) {
-    // obtém a cor do jogador atual
-    String corJogador = jogador.getCor();
-    
-    // obtém a posição do rei do jogador atual
-    Casa posicaoRei = tabuleiro.getPosicaoRei(jogador.getCor());
-    
-    // verifica se o rei está em xeque
-    boolean emXeque = tabuleiro.estaEmCheque(corJogador, posicaoRei);
-    
-    return emXeque;
-  }
-  
-  public boolean ehXequeMate(Tabuleiro tabuleiro) {
-    // Verifica se o jogador está em xeque
-    if (!ehXeque(tabuleiro)) {
-        return false; // Se não está em xeque, não é xeque-mate
-    }
-
-    // Para cada peça do jogador
-    for (Peca peca : jogador.pecasAtivas()) {
-        Casa posicaoAtual = tabuleiro.getPosicaoPeca(peca);
-
-        // Tenta todas as posições possíveis no tabuleiro
-        for (int linha = 1; linha <= 8; linha++) {
-            for (char coluna = 'A'; coluna <= 'H'; coluna++) {
-                Casa posicaoDestino = new Casa(linha, coluna);
-
-                // Cria uma jogada hipotética
-                Jogada jogadaTeste = new Jogada(jogador, posicaoAtual, posicaoDestino);
-
-                // Verifica se a jogada é válida, incluindo se o caminho está livre
-                if (jogadaTeste.ehValida(tabuleiro) && jogadaTeste.getCaminho().estaLivre()) {
-                    // Realiza a jogada (modificando diretamente o tabuleiro)
-                    tabuleiro.removerPeca(posicaoAtual);
-                    tabuleiro.colocarPeca(peca, posicaoDestino);
-
-                    // Verifica se o rei ainda está em xeque após a jogada
-                    if (!tabuleiro.estaEmCheque(jogador.getCor(), tabuleiro.getPosicaoRei(jogador.getCor()))) {
-                        // Se alguma jogada tira o rei do xeque, não é xeque-mate
-                        // Desfaz a jogada manualmente
-                        tabuleiro.removerPeca(posicaoDestino);
-                        tabuleiro.colocarPeca(peca, posicaoAtual);
-                        return false;
-                    }
-
-                    // Desfaz a jogada (coloca as peças de volta às posições originais)
-                    tabuleiro.removerPeca(posicaoDestino);
-                    tabuleiro.colocarPeca(peca, posicaoAtual);
-                }
+    private void criarCaminho() {
+        
+        String percurso = tabuleiro.getCasa(linhaO, colunaO).getPeca().caminho(linhaO, colunaO, linhaD, colunaD); //vms usar o método de caminho que existe em peça
+            
+        if(percurso.length() > 4) { //se o tam de percurso for 4, ent só tem duas casas (final e inicial) nao há caminho pra fzr
+            for(int i = 2; i < percurso.length() - 2; i += 2) {
+                char linha = percurso.charAt(i);
+                char coluna = percurso.charAt(i+1);
+                caminho.adicionarCasa(tabuleiro.getCasa((int)(linha - 49 + 1), coluna));
             }
         }
     }
-
-    // Se nenhuma jogada possível tira o rei do xeque, é xeque-mate
-    return true;
+    
+    
+    private boolean procurandoXequeMate() {
+        
+        for(int linha = 1; linha <= 8; linha++) { //passando pelo tabuleiro
+            for(char coluna = 'a'; coluna <= 'h'; coluna++) {
+                    
+                Casa casaAtual = tabuleiro.getCasa(linha, coluna);
+                    
+                if(casaAtual.estaOcupada() && jogador.ehDoJogador(casaAtual.getPeca())) { //qnd achamos uma peça do nosso jogador
+                    if(casaAtual.getPeca() instanceof Peao) { //se for um peao
+                        Peao peao = (Peao) casaAtual.getPeca(); //faz o cast
+                            
+                        if (peao.peaoAtaque(linha, coluna, linhaD, colunaD)) return true;
+                        //se o peao puder atacar a nova casa do rei, esta em xeque
+                    } else {
+                        
+                        if(casaAtual.getPeca().movimentoValido(linha, coluna, linhaD, colunaD)) return true;
+                        //se a peça aleatória puder atacar a nova casa do rei, esta em xeque pt2
+                    }
+                }
+            }
+        }
+        
+        return false;
+    }
+    
+    public String escrever() {
+        return "<" + linhaO + colunaO + linhaD + colunaD + ">";
+    }
+    
 }
 
-
-  // Getters para as propriedades da jogada
-  public Jogador getJogador() {
-    return jogador;
-  }
-
-  public Caminho getCaminho() {
-    return caminho;
-  }
-}
+//meu jesus nem sei mais o que ta acontecendo nesse codigo
+//real antigo eu, tbm n sei
