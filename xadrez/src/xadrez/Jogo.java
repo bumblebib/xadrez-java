@@ -1,152 +1,226 @@
-/*
-        Não completa!!
-        O jogo cria até 2 jogadores
-        O jogo cria um tabuleiro
-        O jogo cria uma peça
-        O jogo cria uma ou mais jogadaas e verifica estas jogadas
-*/
-
 package xadrez;
 
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Jogo {
+
     private Tabuleiro tabuleiro;
     private Jogador jogadores[] = new Jogador[2];
     private ArrayList<Jogada> jogada;
     private Peca pecas[] = new Peca[32];
     private int estado; // inicio 1, xeque 2, xeque-mate 3
-    private int turnoJogador; // qual jogador é a vez branco(1) ou preto(2)
+    private int turnoJogador; // qual jogador é a vez branco(0) e preto (1)
+    private Scanner leitor = new Scanner(System.in);
     
-    public Jogo(){
+    public Jogo() {
+        
+        this.jogada = new ArrayList<Jogada>(); 
+        setEstado(1);
+        setTurnoJogador(0); //peças brancas começam
+        
+        this.jogadores[0] = new Jogador("Branco");
+        this.jogadores[1] = new Jogador("Preto");
+        inicializarJogo();
+    }
+    
+    public Jogo(String jogador1, String jogador2) { //um construtor diferente pro caso de carregarJogo
         this.jogada = new ArrayList<Jogada>();
         setEstado(1);
-        setTurnoJogador(1); // não sei quem que começa primeiro
+        setTurnoJogador(0);
         
-        // pegando informações do jogador 1 
-        System.out.println("Jogador 1, por favor informe seu nome e a cor das suas peças");
-        Scanner leitor = new Scanner(System.in);
-        System.out.print("Nome: ");
-        String nome1 = leitor.nextLine();
-        System.out.print("Cor: ");
-        String cor1 = leitor.nextLine();
-        this.jogadores[0] = new Jogador(nome1, cor1);
+        this.jogadores[0] = new Jogador("Branco", jogador1); //tbm criando jogador diferente com nome ja
+        this.jogadores[1] = new Jogador("Preto", jogador2);
         
-        // pegando informações do jogador 2
-        System.out.println("Jogador 1, por favor informe seu nome e a cor das suas peças");
-        System.out.print("Nome: ");
-        String nome2 = leitor.nextLine();
-        System.out.print("Cor: ");
-        String cor2 = leitor.nextLine();
-        this.jogadores[0] = new Jogador(nome2, cor2);
+        inicializarJogo(); //vai inicializar mas n vai rodar
     }
     
-
-    public boolean jogadaValida(int linhaO, char colunaO, int linhaD, char colunaD){
-        Casa origem = tabuleiro.getCasa(new Casa(linhaO, colunaO));
-        Casa destino = tabuleiro.getCasa(new Casa(linhaD, colunaD));
-        Jogada jogada = new Jogada(jogadores[turnoJogador], origem, destino);
-        if (jogada.ehValida(tabuleiro)){
-            this.jogada.add(jogada);
-            return true;
+    private void inicializarJogo() {
+        this.tabuleiro = new Tabuleiro();
+        
+        pecas[0] = new Torre("Branco"); 
+        pecas[1] = new Cavalo("Branco");
+        pecas[2] = new Bispo("Branco");
+        pecas[3] = new Dama("Branco");
+        pecas[4] = new Rei("Branco");
+        pecas[5] = new Bispo("Branco");
+        pecas[6] = new Cavalo("Branco");
+        pecas[7] = new Torre("Branco");
+        
+        for(int i = 8; i < 16; i++) { 
+            pecas[i] = new Peao("Branco");
+        } //criando todas as peças brancas
+        
+        pecas[16] = new Torre("Preto"); 
+        pecas[17] = new Cavalo("Preto");
+        pecas[18] = new Bispo("Preto");
+        pecas[19] = new Dama("Preto");
+        pecas[20] = new Rei("Preto");
+        pecas[21] = new Bispo("Preto");
+        pecas[22] = new Cavalo("Preto");
+        pecas[23] = new Torre("Preto");
+        
+        for(int i = 24; i < 32; i++) { 
+            pecas[i] = new Peao("Preto");
+        } //criando todas as peças pretas
+        
+        //agr vamos entregar as peças brancas pro jogador 1
+        for(int i = 0; i < 16; i++) {
+            jogadores[0].receberPecas(pecas[i]);
+        } 
+        
+        //pretas pro jogador 2
+        for(int i = 16; i < 32; i++) {
+            jogadores[1].receberPecas(pecas[i]);
         }
-        return false;
-    }
-
-    public void realizarJogada(int linhaO, char colunaO, int linhaD, char colunaD) {
-        if (jogadaValida(linhaO, colunaO, linhaD, colunaD)) {
-            Casa origem = tabuleiro.getCasa(new Casa(linhaO, colunaO));
-            Casa destino = tabuleiro.getCasa(new Casa(linhaD, colunaD));
-            Peca pecaMovida = origem.getPecaNaCasa();
+        
+        //faltar colocar elas no tabuleiro
+        for(int i = 0; i < 8; i++) {
+            tabuleiro.ocuparCasa(1, i, pecas[i]);
+            tabuleiro.ocuparCasa(2, i, pecas[i + 8]);
+            tabuleiro.ocuparCasa(8, i, pecas[i + 16]);
+            tabuleiro.ocuparCasa(7, i, pecas[i + 24]);
+        }
+        
+        tabuleiro.desenho();
             
-            // Atualizar o posicionamento das peças no tabuleiro
-            tabuleiro.colocarPeca(pecaMovida, destino);
-            tabuleiro.removerPeca(origem);
+    }
+    
+    public void rodarJogo() {
+        
+        boolean continuar = true;
+        
+        while(continuar) {
             
-            // Verificar se o jogo está em xeque ou xeque-mate
-            if (jogada.get(jogada.size() - 1).ehXeque(tabuleiro)) {
-                if (jogada.get(jogada.size() - 1).ehXequeMate(tabuleiro)) {
-                    setEstado(3); // xeque-mate
-                    System.out.println("Xeque-mate! O jogador " + jogadores[turnoJogador].getNome() + " perdeu!");
-                } else {
-                    setEstado(2); // xeque
-                    System.out.println("Xeque! O jogador " + jogadores[turnoJogador].getNome() + " está em xeque!");
-                }
-            } else {
-                setEstado(1); // jogo em andamento
+            String jogadaAtual = jogadores[turnoJogador].informaJogada();
+            
+            if(jogadaAtual.equals("Parar") || jogadaAtual.equals("parar")) {
+                continuar = false;
+                break;
             }
-
-            // Trocar o turno do jogador
-            if (turnoJogador == 1) {
-                turnoJogador = 2;
-            } else {
-                turnoJogador = 1;
-            }
-            // Mostrar as informações apropriadas na tela
-            System.out.println("Jogada realizada com sucesso!");
-            // ...
-        } else {
-            System.out.println("Jogada inválida!");
+            
+            int linhaO = (int)(jogadaAtual.charAt(0) - 49 + 1);
+            char colunaO = jogadaAtual.charAt(1);
+            int linhaD = (int)(jogadaAtual.charAt(2) - 49 + 1);
+            char colunaD = jogadaAtual.charAt(3);
+            
+            realizarJogada(linhaO, colunaO, linhaD, colunaD);
+            
+            if(estado == 3) continuar = false;
         }
+        
+        System.out.println("Bom jogo! Muito obrigado por jogar com a gente! >-<");
     }
-
-    public String registroJogo() {
-        StringBuilder registro = new StringBuilder();
-        
-        // Informações do tabuleiro
-        registro.append("Tabuleiro:\n");
-        registro.append(tabuleiro.toString());
-        
-        // Informações dos jogadores
-        registro.append("Jogadores:\n");
-        for (Jogador jogador : jogadores) {
-            registro.append(jogador.toString());
-            registro.append("\n");
-        }
-        
-        // Informações das jogadas
-        registro.append("Jogadas:\n");
-        for (Jogada jogada : jogada) {
-            registro.append(jogada.toString());
-            registro.append("\n");
-        }
-        
-        // Informações do estado e turno do jogo
-        registro.append("Estado: ");
-        switch (estado) {
-            case 1:
-                registro.append("Jogo em andamento");
-                break;
-            case 2:
-                registro.append("Xeque");
-                break;
-            case 3:
-                registro.append("Xeque-mate");
-                break;
-        }
-        registro.append("\n");
-        
-        registro.append("Turno do jogador: ");
-        switch (turnoJogador) {
-            case 1:
-                registro.append(jogadores[0].getNome());
-                break;
-            case 2:
-                registro.append(jogadores[1].getNome());
-                break;
-        }
-        registro.append("\n");
-        
-        return registro.toString();
-    }
-
-    public void setEstado(int estado) {
+    
+    public void setEstado(int estado){
         this.estado = estado;
     }
-
-    public void setTurnoJogador(int turnoJogador){
-        this.turnoJogador = turnoJogador;
+    
+    private void setTurnoJogador(int jogador){
+        this.turnoJogador = jogador;
     }
+    
+    public void realizarJogada(int linhaO, char colunaO, int linhaD, char colunaD) {
+        
+        Jogada novaJogada = new Jogada(linhaO, colunaO, linhaD, colunaD, jogadores[turnoJogador], tabuleiro);
+
+        if(jogadaValida(novaJogada)) {
+            jogada.add(novaJogada); //adiciona no histórico
+            
+            atualizandoStatus(novaJogada); //testa xeque e xeque mate e imprime uma mensagem dependendo
+            
+           Peca pecaMovendo = tabuleiro.getCasa(linhaO, colunaO).getPeca(); //pegando a peça
+           tabuleiro.getCasa(linhaO, colunaO).desocupar(); //liberando a casa
+           
+           if(tabuleiro.getCasa(linhaD, colunaD).estaOcupada()) { //se for um moviemnto de captura
+                if(turnoJogador == 0) {
+                    jogadores[1].capturarPeca(tabuleiro.getCasa(linhaD, colunaD).getPeca());  //captura a peça do advr
+                } else {
+                    jogadores[0].capturarPeca(tabuleiro.getCasa(linhaD, colunaD).getPeca()); 
+                }
+           }
+           
+           tabuleiro.getCasa(linhaD, colunaD).ocupar(pecaMovendo); //ocupa a nova casa
+           
+            //agr que a jogada foi feita, precisamos atualizar as info do jogo e mostrar as informaçoes na tela
+        
+            jogadores[1].mostrarCapturadas();
+            tabuleiro.desenho();
+            jogadores[0].mostrarCapturadas(); //printando o tabuleiro e as peças capturadas no lado de cada um 
+        
+            if(turnoJogador == 0) {
+                setTurnoJogador(1);
+            } else {
+                setTurnoJogador(0);
+            } //troca o turno
+            
+        } else { //pro caso da jogada nao ser válida
+            
+            System.out.println("Jogada inválida. Tente novamente");
+        }
+        
+    } 
+    
+    public boolean jogadaValida(Jogada novaJogada) {        
+        if(novaJogada.ehValida()) return true;
+        
+        return false;
+    }
+    
+    private void atualizandoStatus(Jogada novaJogada) {
+        
+        if(turnoJogador == 0) { //se era a vez das brancas
+            if(novaJogada.ehXeque(jogadores[1])) { //vamos ver se as pretas estao em xeque
+                
+                if(novaJogada.ehXequeMate(jogadores[1])) { //se estiver em xeque, testamos xeque mate
+                    setEstado(3);
+                    System.out.println("Xeque-Mate! " + jogadores[0].getNome() + " venceu!");
+                    
+                } else {
+                    setEstado(2); //se nao é só xeque mesmo
+                    System.out.println("O rei Preto esta em Xeque!");
+                }
+            }
+            
+        } else {
+            
+            if(novaJogada.ehXeque(jogadores[1])) { //mesma coisa para as pretas
+                
+                if(novaJogada.ehXequeMate(jogadores[0])) {
+                    setEstado(3);
+                    System.out.println("O rei Branco esta em Xeque Mate!");
+                    
+                } else {
+                    setEstado(2);
+                    System.out.println("Xeque-Mate! " + jogadores[1].getNome() + " venceu!");
+                }
+            }
+        }
+    }
+    
+    public ArrayList getJogadas() {
+        return jogada;
+    }
+    
+    public Jogada getJogada(int i) {
+        return jogada.get(i);
+    }
+    
+    public String escreverJogador(int i) {
+        return jogadores[i].escrever();
+    }
+    
+    public void receberJogada(String jogada) {
+        
+        int linhaO = (int)(jogada.charAt(0) - 49 + 1);
+        char colunaO = jogada.charAt(1);
+        int linhaD = (int)(jogada.charAt(2) - 49 + 1);
+        char colunaD = jogada.charAt(3);
+        
+        realizarJogada(linhaO, colunaO, linhaD, colunaD);
+        
+    }
+    
+    //parece completo, acho que gerenciador é que vai coordenar o jogo, será?
     
 }
