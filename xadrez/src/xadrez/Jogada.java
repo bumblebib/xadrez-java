@@ -84,6 +84,25 @@ public class Jogada {
     
     public boolean ehXeque(Jogador oponente) {
         
+        if(oponente == null) throw new IllegalArgumentException("Esse Jogador nao existe");
+        
+        try {
+            
+            Casa casaRei = tabuleiro.acharRei(oponente.getCor()); //achando o rei oponente
+            
+            Jogada simulacao = new Jogada(linhaD, colunaD, casaRei.getLinha(), casaRei.getColuna(), jogador, tabuleiro);
+            
+            if(simulacao.ehValida()) return true;
+            
+        } catch(IllegalArgumentException exc) {
+            System.out.println("Erro ao verificar xeque: " + exc.getMessage());
+        }
+        
+        return false;
+    }
+    
+  /*  public boolean ehXeque(Jogador oponente) {
+        
         if(oponente == null) throw new IllegalArgumentException("Esse jogador nao existe");
         
         try {
@@ -106,7 +125,7 @@ public class Jogada {
         
         return false;
         
-    }
+    } */
     
     public boolean ehXequeMate(Jogador oponente) {
         
