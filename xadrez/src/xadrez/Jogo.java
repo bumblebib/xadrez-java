@@ -146,8 +146,6 @@ public class Jogo {
             if(jogadaValida(novaJogada)) {
                 jogada.add(novaJogada); //adiciona no histórico
             
-                atualizandoStatus(novaJogada); //testa xeque e xeque mate e imprime uma mensagem dependendo
-            
                 Peca pecaMovendo = tabuleiro.getCasa(linhaO, colunaO).getPeca(); //pegando a peça
                 tabuleiro.getCasa(linhaO, colunaO).desocupar(); //liberando a casa
            
@@ -163,6 +161,9 @@ public class Jogo {
            
                 //agr que a jogada foi feita, precisamos atualizar as info do jogo e mostrar as informaçoes na tela
         
+                //MUDEI DE LLUGAR
+                atualizandoStatus(novaJogada); //testa xeque e xeque mate e imprime uma mensagem dependendo
+                
                 jogadores[1].mostrarCapturadas();
                 tabuleiro.desenho();
                 jogadores[0].mostrarCapturadas(); //printando o tabuleiro e as peças capturadas no lado de cada um 
@@ -186,6 +187,11 @@ public class Jogo {
     public boolean jogadaValida(Jogada novaJogada) {  
         
         if(novaJogada == null) throw new IllegalArgumentException("Essa Jogada nao existe");
+        
+        //se o jogador tentar fzr um movimento de capturar o rei, nao vou permitir
+        if(tabuleiro.getCasa(novaJogada.getLinhaD(), novaJogada.getColunaD()).getPeca() instanceof Rei) {
+            return false;
+        }
         
         if(novaJogada.ehValida()) return true;
         return false;
@@ -212,15 +218,15 @@ public class Jogo {
             
             } else {
             
-                if(novaJogada.ehXeque(jogadores[1])) { //mesma coisa para as pretas
+                if(novaJogada.ehXeque(jogadores[0])) { //mesma coisa para as pretas
                 
                     if(novaJogada.ehXequeMate(jogadores[0])) {
                         setEstado(3);
-                        System.out.println("O rei Branco esta em Xeque Mate!");
+                        System.out.println("Xeque-Mate! " + jogadores[1].getNome() + " venceu!");
                     
                     } else {
                         setEstado(2);
-                        System.out.println("Xeque-Mate! " + jogadores[1].getNome() + " venceu!");
+                        System.out.println("O rei Branco esta em Xeque!");
                     }
                 }
             }
