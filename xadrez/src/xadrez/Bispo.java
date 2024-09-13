@@ -70,4 +70,3 @@ public class Bispo extends Peca {
     } //verifica se as linhas/colunas estao no intervalo valido
    
 }
-
