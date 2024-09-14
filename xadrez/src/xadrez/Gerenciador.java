@@ -3,8 +3,6 @@ package xadrez;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.*;
-import java.io.IOException;
-import java.io.FileNotFoundException;
 import java.util.InputMismatchException;
 
 public class Gerenciador {
@@ -24,44 +22,46 @@ public class Gerenciador {
     
     public void menuInicial() {
         
-        System.out.println(" ---- Jogo de Xadrez -----" + '\n');
-        System.out.println("O que deseja fazer? ");
-        System.out.println("Opcao 1: Iniciar Novo Jogo");
-        System.out.println("Opcao 2: Carregar Jogo");
+         System.out.println(" ---- Jogo de Xadrez -----" + '\n');
+         System.out.println("O que deseja fazer? ");
+         System.out.println("Opcao 1: Iniciar Novo Jogo");
+         System.out.println("Opcao 2: Carregar Jogo");
         
-        int operacao = 0;
-        boolean continuar = true;
+         int operacao = 0;
+         boolean continuar = true;
         
-        while(continuar) {
-            try {
-                operacao = leitor.nextInt();
+         while(continuar) {
+             try {
+                 operacao = leitor.nextInt();
                 
-            if(operacao == 1 || operacao == 2) continuar = false;
-            else System.out.println("Por favor, digite uma opcao valida");
+             if(operacao == 1 || operacao == 2) continuar = false;
+             else System.out.println("Por favor, digite uma opcao valida");
             
-            } catch(InputMismatchException exc) {
-                System.out.println("Por favor, digite um numero inteiro");
-                leitor.next(); //apagar o buffer
-            }
-        }
+             } catch(InputMismatchException exc) {
+                 System.out.println("Por favor, digite um numero inteiro");
+                 leitor.next(); //apagar o buffer
+             }
+         }
         
-        switch(operacao) { //como já tem uma verificação ali em cima
-            //só vai entrar 1 ou 2 aqui
+         switch(operacao) { //como já tem uma verificação ali em cima
+             //só vai entrar 1 ou 2 aqui
             
-            case 1:
-                System.out.println("Iniciando uma Nova Partida de Xadrez..." + '\n');
-                jogo = new Jogo();
-                jogo.rodarJogo(); //vai rodar sozinho até o jogador digitar parar ou dar xeque-mate
+             case 1:
+                 System.out.println("Iniciando uma Nova Partida de Xadrez..." + '\n');
+                 jogo = new Jogo();
+                 jogo.rodarJogo(); //vai rodar sozinho até o jogador digitar parar ou dar xeque-mate
                 
-                querSalvar(); //vai dar a opção de salvar ou não 
+                 querSalvar(); //vai dar a opção de salvar ou não
                 
-                break;
+                 break;
                 
-            case 2:
-                carregarJogo(); //método pra carregar o jogo
-                break;
+             case 2:
+                 carregarJogo(); //método pra carregar o jogo
+                 break;
 
-        }
+         }
+
+        //testeJogo();
         
     }
     
@@ -155,5 +155,28 @@ public class Gerenciador {
         
     }
     
-    
+    public void testeJogo() {
+        System.out.println("Iniciando teste de Jogo de Xadrez com jogadas pré-definidas..." + '\n');
+        
+        // Criar um novo jogo com jogadores fictícios
+        jogo = new Jogo("Jogador 1", "Jogador 2");
+        
+        // Adicionar jogadas pré-definidas
+        String[] jogadasPreDefinidas = {
+            "2e4e", "7d5d", "1d5h", "5d4e", "5h7f", "8d2d"
+        };
+        
+        for (String jogada : jogadasPreDefinidas) {
+            jogo.receberJogada(jogada);
+        }
+        
+        // Rodar o jogo com as jogadas pré-definidas
+        while(jogo.getEstado() == 1) {
+            jogo.rodarJogo();
+        }
+
+
+        System.out.println("Fim do teste de Jogo de Xadrez com jogadas pré-definidas." + '\n');
+
+    }
 }

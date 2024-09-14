@@ -266,7 +266,10 @@ public class Jogo {
         realizarJogada(linhaO, colunaO, linhaD, colunaD);
         
     }
+
+    public int getEstado() {
+        return estado;
+    }
     
-    //parece completo, acho que gerenciador é que vai coordenar o jogo, será?
     
 }
