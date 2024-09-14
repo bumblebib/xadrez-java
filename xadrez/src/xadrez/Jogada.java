@@ -88,7 +88,7 @@ public class Jogada {
     }
 
 
-     public boolean ehXequeMate(Jogador oponente) {
+    public boolean ehXequeMate(Jogador oponente) {
         
          if(oponente == null) throw new IllegalArgumentException("Esse Jogador nao existe");
         
@@ -109,14 +109,17 @@ public class Jogada {
              testeRei.add(new Jogada(linhaRei, colunaRei, linhaRei + 1, (char)(colunaRei - 1), oponente, tabuleiro));
              testeRei.add(new Jogada(linhaRei, colunaRei, linhaRei - 1, (char)(colunaRei + 1), oponente, tabuleiro));
              //criando as 8 jogadas possiveis do rei oponente
-
-             for(Jogada j: testeRei) {
-//                 if(!j.movimentoSimuladoRei()) {
-//                     return false;
-//                 }
-                 if(!ehXeque(oponente)){
-                     return false;
-                 }
+             for(Jogada j : testeRei) {
+                if(j.ehValida()){
+                    simularJogada(j);
+                    if(!ehXeque(oponente)) {
+                        desfazerJogada(j);
+                        return false;
+                    }else{
+                        desfazerJogada(j);
+                        return true;
+                    }
+                }
              }
 
          } catch(IllegalArgumentException exc) {
@@ -124,7 +127,34 @@ public class Jogada {
          }
         
          return true;
-     }
+    }
+
+
+    private void simularJogada(Jogada jogada) {
+        
+        try {
+            
+        tabuleiro.getCasa(jogada.getLinhaD(), jogada.getColunaD()).ocupar(tabuleiro.getCasa(jogada.getLinhaO(), jogada.getColunaO()).getPeca());
+        tabuleiro.getCasa(jogada.getLinhaO(), jogada.getColunaO()).desocupar();
+            
+            
+        } catch(IllegalArgumentException exc) {
+            System.out.println("Erro ao simular jogada: " + exc.getMessage());
+        }
+    }
+
+    private void desfazerJogada(Jogada jogada) {
+            
+            try {
+                tabuleiro.getCasa(jogada.getLinhaO(), jogada.getColunaO()).ocupar(tabuleiro.getCasa(jogada.getLinhaD(), jogada.getColunaD()).getPeca());
+                tabuleiro.getCasa(jogada.getLinhaD(), jogada.getColunaD()).desocupar();
+                
+                
+            } catch(IllegalArgumentException exc) {
+                System.out.println("Erro ao desfazer jogada: " + exc.getMessage());
+            }
+    }
+    
     
     private void criarCaminho() {
         
@@ -146,74 +176,14 @@ public class Jogada {
             System.out.println("Erro ao criar caminho: " + exc.getMessage());
         }
     }
-    
-//     private boolean procurandoXequeMate() {
-//
-//         try {
-//
-//             for(int linha = 1; linha <= 8; linha++) {
-//                 for(char coluna = 'a'; coluna <= 'h'; coluna++) {
-//
-//                     Casa casaAtual = tabuleiro.getCasa(linha, coluna);
-//
-//                     if(casaAtual.estaOcupada() && jogador.ehDoJogador(casaAtual.getPeca())) {
-//                         Jogada novaSimulacao = new Jogada(linha, coluna, linhaD, colunaD, jogador, tabuleiro);
-//
-//                         if(novaSimulacao.ehValida()) {
-//                             desfazendoMovimentoSimulado();
-//                             return true;
-//                         }
-//                     }
-//                 }
-//             }
-//
-//         } catch(IllegalArgumentException exc) {
-//             System.out.println("Erro ao verificar xeque-mate: " + exc.getMessage());
-//         }
-//
-//         desfazendoMovimentoSimulado();
-//         return false;
-//     }
+
     
     public String escrever() {
         return "<" + linhaO + colunaO + linhaD + colunaD + ">";
     }
     
-    //acho que vou ter que fzr e desfazer os movimentos possiveis do rei pra conseguir analisar isso
-    
-//     private boolean movimentoSimuladoRei() {
-//
-//         try {
-//
-//             if(ehValida() && !tabuleiro.getCasa(linhaD, colunaD).estaOcupada()) {
-//                 Peca rei = tabuleiro.getCasa(linhaO, colunaO).getPeca();
-//                 tabuleiro.getCasa(linhaO, colunaO).desocupar();
-//                 tabuleiro.getCasa(linhaD, colunaD).ocupar(rei);
-//
-//                 return procurandoXequeMate();
-//             } //fznd o movimento temporariamente
-//
-//         } catch(IllegalArgumentException exc) {
-//             System.out.println("Erro ao testar Jogadas do Rei: " + exc.getMessage());
-//         }
-//
-//         return true;
-//     }
-    
-//     private void desfazendoMovimentoSimulado() {
-//
-//         try {
-//
-//             Peca rei = tabuleiro.getCasa(linhaD, colunaD).getPeca();
-//             tabuleiro.getCasa(linhaD, colunaD).desocupar();
-//             tabuleiro.getCasa(linhaO, colunaO).ocupar(rei);
-//
-//         } catch(IllegalArgumentException exc) {
-//             System.out.println("Erro ao desfazer movimento simulado do rei: " + exc.getMessage());
-//         }
-//
-//     }
-    
+
+
     public int getLinhaD(){
         return linhaD;
     }
@@ -221,8 +191,14 @@ public class Jogada {
     public char getColunaD() {
         return colunaD;
     }
+
+    public int getLinhaO() {
+        return linhaO;
+    }
+
+    public char getColunaO() {
+        return colunaO;
+    }
+
     
 }
-
-//meu jesus nem sei mais o que ta acontecendo nesse codigo
-//real antigo eu, tbm n sei
