@@ -11,7 +11,6 @@ public class Jogo {
     private Peca pecas[] = new Peca[32];
     private int estado; // inicio 1, xeque 2, xeque-mate 3
     private int turnoJogador; // qual jogador é a vez branco(0) e preto (1)
-    private Scanner leitor = new Scanner(System.in);
     
     public Jogo() {
         
@@ -160,7 +159,7 @@ public class Jogo {
                 }
            
                 tabuleiro.getCasa(linhaD, colunaD).ocupar(pecaMovendo); //ocupa a nova casa
-                System.out.println("Movendo peça: " + pecaMovendo.desenha() + " " + pecaMovendo.getCor() + " de " + linhaO + colunaO + " para " + linhaD + colunaD);
+                System.out.println("Movendo peça: " + pecaMovendo.desenha() + " " + pecaMovendo.getCor());
            
                 //agr que a jogada foi feita, precisamos atualizar as info do jogo e mostrar as informaçoes na tela
         
