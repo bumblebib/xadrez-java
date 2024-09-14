@@ -78,11 +78,6 @@ public class Cavalo extends Peca {
         else return "c";
     }
     
-    /*@Override
-    public String desenho() {
-        return this.cor.equals("branco") ? "♘" : "♞";
-    }*/
-    
     private boolean posicoesValidas(int linhaO, char colunaO, int linhaD, char colunaD) {
         return (linhaO >= 1 && linhaO <= 8 && linhaD >= 1 && linhaD <= 8) &&
         (colunaO >= 'a' && colunaO <= 'h' && colunaD >= 'a' && colunaD <= 'h');

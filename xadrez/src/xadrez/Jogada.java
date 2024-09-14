@@ -1,10 +1,6 @@
 package xadrez;
 import java.util.ArrayList;
 
-//xeque só pra jogada efetuada agr
-//a prof falou pra fzr xeque mate sem passar pelo tabuleiro, pegando as peças do jogador direto
-//mas n tem como, a peça n sabe onde esta pra eu usar o movimentoValido
-
 public class Jogada {
     
     private Tabuleiro tabuleiro; //jogada conhece tabuleiro, o jogador que ta fznd a jogada
@@ -111,13 +107,22 @@ public class Jogada {
              //criando as 8 jogadas possiveis do rei oponente
              for(Jogada j : testeRei) {
                 if(j.ehValida()){
+                    // se dos movimentos possíveis do Rei, tiver uma jogada válida, simula a jogada
                     simularJogada(j);
-                    if(!ehXeque(oponente)) {
-                        desfazerJogada(j);
-                        return false;
+
+                    if(!ehXeque(oponente)) { // se a jogada tirar o rei de xeque não é xeque-mate
+
+                        desfazerJogada(j); // desfaz a jogada para voltar a peça a posição original
+
+                        return false; // retorna falso para confirmar que não é xeque-mate
                     }else{
-                        desfazerJogada(j);
-                        return true;
+                        /*
+                            Se tiver uma jogada válida que o rei possa fazer, mas essa jogada não o tirar de Xeque
+                            Significa que o rei está cercado, logo xeque-mate!
+                         */
+                        desfazerJogada(j); // desfaz a jogada
+
+                        return true; // retorna verdadeiro para confirmar o xeque-mate
                     }
                 }
              }
@@ -125,7 +130,9 @@ public class Jogada {
          } catch(IllegalArgumentException exc) {
              System.out.println("Erro ao verificar xeque-mate: " + exc.getMessage());
          }
-        
+
+         // se durante a verificação das jogadas nenhuma nenhuma for valida,
+        // retorna verdadeiro para confirmar o xeque-mate.
          return true;
     }
 

@@ -9,15 +9,14 @@ public class Gerenciador {
     
     private Scanner leitor = new Scanner(System.in);
     private Jogo jogo;
-    private ArrayList<Jogada> historicoJogadas;
     
     public static void main(String args[]){ //acho que ta bom de exceção aqui
         
         Gerenciador g = new Gerenciador();
-        
         g.menuInicial();
-        
-        //main o mais enxuto possível   
+
+
+        //g.testeJogo();
     }
     
     public void menuInicial() {
@@ -60,8 +59,6 @@ public class Gerenciador {
                  break;
 
          }
-
-        //testeJogo();
         
     }
     
@@ -154,6 +151,11 @@ public class Gerenciador {
         }
         
     }
+
+    /*
+        Metodo para realizar uma jogada pre-definida de teste
+        testa capturar peças, xeque, e xeque-mate.
+     */
     
     public void testeJogo() {
         System.out.println("Iniciando teste de Jogo de Xadrez com jogadas pré-definidas..." + '\n');
@@ -163,7 +165,7 @@ public class Gerenciador {
         
         // Adicionar jogadas pré-definidas
         String[] jogadasPreDefinidas = {
-            "2e4e", "7d5d", "1d5h", "5d4e", "5h7f", "8d2d"
+            "1a2a", "2e4e", "9l10m","7d5d", "1d5h", "5d4e", "5h7f", "8d2d"
         };
         
         for (String jogada : jogadasPreDefinidas) {

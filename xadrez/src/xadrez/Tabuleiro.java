@@ -1,7 +1,5 @@
 package xadrez;
 
-//adicionei verificação dos parâmetros dos métodos
-
 public class Tabuleiro {
     
     private Casa[][] casas = new Casa[8][8]; //uma matriz que é o tabuleiro
@@ -58,9 +56,9 @@ public class Tabuleiro {
         
         return null;
     } 
-    
-    public void desenho() { //criei um novo método pra desenhar o tabuleiro
-            //achei que ia ficar melhor com as linhas e colunas pro jogador ver
+
+    // metodo para visualizar o tabuleiro
+    public void desenho() {
             
         System.out.println(ANSI_BOLD + "|---------------------------|");
         System.out.println("|   " + ANSI_BLUE + "a  b  c  d  e  f  g  h  " + ANSI_RESET + ANSI_BOLD + "|"); 

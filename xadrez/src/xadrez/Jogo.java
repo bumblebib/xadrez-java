@@ -138,15 +138,17 @@ public class Jogo {
     }
     
     private void realizarJogada(int linhaO, char colunaO, int linhaD, char colunaD) {
+        System.out.println(jogadores[turnoJogador].getNome() + " realizou a jogada de: " + linhaO+ colunaO + " para " + linhaD + colunaD);
         
         try {
         
             Jogada novaJogada = new Jogada(linhaO, colunaO, linhaD, colunaD, jogadores[turnoJogador], tabuleiro);
+            Peca pecaMovendo = tabuleiro.getCasa(linhaO, colunaO).getPeca(); //pegando a peça
 
             if(jogadaValida(novaJogada)) {
                 jogada.add(novaJogada); //adiciona no histórico
             
-                Peca pecaMovendo = tabuleiro.getCasa(linhaO, colunaO).getPeca(); //pegando a peça
+
                 tabuleiro.getCasa(linhaO, colunaO).desocupar(); //liberando a casa
            
                 if(tabuleiro.getCasa(linhaD, colunaD).estaOcupada()) { //se for um moviemnto de captura
@@ -158,10 +160,10 @@ public class Jogo {
                 }
            
                 tabuleiro.getCasa(linhaD, colunaD).ocupar(pecaMovendo); //ocupa a nova casa
+                System.out.println("Movendo peça: " + pecaMovendo.desenha() + " " + pecaMovendo.getCor() + " de " + linhaO + colunaO + " para " + linhaD + colunaD);
            
                 //agr que a jogada foi feita, precisamos atualizar as info do jogo e mostrar as informaçoes na tela
         
-                //MUDEI DE LLUGAR
                 atualizandoStatus(novaJogada); //testa xeque e xeque mate e imprime uma mensagem dependendo
                 
                 jogadores[1].mostrarCapturadas();
