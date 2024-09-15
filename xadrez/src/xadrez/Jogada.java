@@ -33,13 +33,13 @@ public class Jogada {
             //se uma das casas esta fora dos limites do tabuleiro, invalido
             if(!tabuleiro.noLimite(linhaO, colunaO) || !tabuleiro.noLimite(linhaD, colunaD)) return false;
         
-            //se a casa inicial nao estiver ocupada, que peça o abençoado vai mexer
+            //se a casa inicial nao estiver ocupada, nao ha peça pra mexer
             if(!tabuleiro.getCasa(linhaO, colunaO).estaOcupada()) return false; 
         
             //se a peça da casa incial nao for do jogador aqui
             if(!jogador.ehDoJogador(tabuleiro.getCasa(linhaO, colunaO).getPeca())) return false;
         
-            //se a peça na última casa for do próprio jogador (tu quer se capturar eh)
+            //se a peça na última casa for do próprio jogador 
             if(tabuleiro.getCasa(linhaD, colunaD).estaOcupada() && jogador.ehDoJogador(tabuleiro.getCasa(linhaD, colunaD).getPeca())) return false;
         
             //se a peça em questão for um peão, e a casa que ele quer ir esta ocupada, temos que fzr uma verificação diferente
@@ -108,7 +108,9 @@ public class Jogada {
              for(Jogada j : testeRei) {
                 if(j.ehValida()){
                     // se dos movimentos possíveis do Rei, tiver uma jogada válida, simula a jogada
+                    if(!tabuleiro.getCasa(j.getLinhaD(), j.getColunaD()).estaOcupada())
                     simularJogada(j);
+                    else return true;
 
                     if(!ehXeque(oponente)) { // se a jogada tirar o rei de xeque não é xeque-mate
 
@@ -139,6 +141,8 @@ public class Jogada {
 
     private void simularJogada(Jogada jogada) {
         
+        if(jogada == null) throw new IllegalArgumentException("Essa Jogada nao existe");
+        
         try {
             
         tabuleiro.getCasa(jogada.getLinhaD(), jogada.getColunaD()).ocupar(tabuleiro.getCasa(jogada.getLinhaO(), jogada.getColunaO()).getPeca());
@@ -151,6 +155,8 @@ public class Jogada {
     }
 
     private void desfazerJogada(Jogada jogada) {
+        
+        if(jogada == null) throw new IllegalArgumentException("Essa Jogada nao existe");
             
             try {
                 tabuleiro.getCasa(jogada.getLinhaO(), jogada.getColunaO()).ocupar(tabuleiro.getCasa(jogada.getLinhaD(), jogada.getColunaD()).getPeca());
