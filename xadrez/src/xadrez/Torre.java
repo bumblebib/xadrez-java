@@ -16,7 +16,7 @@ public class Torre extends Peca {
         if(emJogo) {
 
             if(linhaO == linhaD || colunaO == colunaD) return true;
-            //se a linha ou coluna de destino for igual a de origem, então ele esta se movendo em linha reta
+            // se a linha ou coluna de destino for igual a de origem, então ele esta se movendo em linha reta
         }
         
         return false;
@@ -58,7 +58,7 @@ public class Torre extends Peca {
     private boolean posicoesValidas(int linhaO, char colunaO, int linhaD, char colunaD) {
         return (linhaO >= 1 && linhaO <= 8 && linhaD >= 1 && linhaD <= 8) &&
         (colunaO >= 'a' && colunaO <= 'h' && colunaD >= 'a' && colunaD <= 'h');
-    } //verifica se as linhas/colunas estao no intervalo valido
+    } // verifica se as linhas/colunas estao no intervalo valido
     
     
 }

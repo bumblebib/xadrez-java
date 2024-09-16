@@ -18,8 +18,8 @@ public class Bispo extends Peca {
             int dLinha = Math.abs(linhaO - linhaD);
             int dColuna = Math.abs(colunaO - colunaD);
             
-            if(dLinha != dColuna) return false; //o bispo só pode se mover na diagonal, então a única maneira de se mover
-            //é se a distancia andada na linha e na coluna for igual
+            if(dLinha != dColuna) return false; // o bispo só pode se mover na diagonal, então a única maneira de se mover
+            // é se a distancia andada na linha e na coluna for igual
             return true;
         }
         
@@ -28,7 +28,7 @@ public class Bispo extends Peca {
     
     @Override 
     public String caminho(int linhaO, char colunaO, int linhaD, char colunaD) {
-        if (movimentoValido(linhaO, colunaO, linhaD, colunaD)) { //já vai fzr a verificação da exceção em movimentoValido
+        if (movimentoValido(linhaO, colunaO, linhaD, colunaD)) { // já vai fazer a verificação da exceção em movimentoValido
             
             StringBuilder percurso = new StringBuilder();
             percurso.append(linhaO).append(colunaO);
@@ -62,6 +62,6 @@ public class Bispo extends Peca {
     private boolean posicoesValidas(int linhaO, char colunaO, int linhaD, char colunaD) {
         return (linhaO >= 1 && linhaO <= 8 && linhaD >= 1 && linhaD <= 8) &&
         (colunaO >= 'a' && colunaO <= 'h' && colunaD >= 'a' && colunaD <= 'h');
-    } //verifica se as linhas/colunas estao no intervalo valido
+    } // verifica se as linhas/colunas estao no intervalo valido
    
 }

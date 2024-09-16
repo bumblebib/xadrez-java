@@ -1,7 +1,5 @@
 package xadrez;
 
-//add o método pra analisar a validade do ataque do peao
-
 public class Peao extends Peca {
     
     public Peao(String cor) {
@@ -20,10 +18,9 @@ public class Peao extends Peca {
             int dLinha = linhaD - linhaO;
             int dColuna = colunaD - colunaO;
             
-            if (dLinha == 1 && dColuna == 0) return true; //peão só pode se mover um casa para frente 
+            if (dLinha == 1 && dColuna == 0) return true; // peão só pode se mover um casa para frente 
             
-            if (dColuna == 0 && dLinha == 2 && linhaO == 2) return true; //salvo na primeira jogada, ele pode mover duas casas
-            //eu deveria fazer o movimento de captura aqui também? 
+            if (dColuna == 0 && dLinha == 2 && linhaO == 2) return true; // salvo na primeira jogada, ele pode mover duas casas
             
         } else {
             
@@ -40,7 +37,7 @@ public class Peao extends Peca {
     
     public boolean peaoAtaque(int linhaO, char colunaO, int linhaD, char colunaD) {
         if(cor.equals("Branco")) {
-            if(linhaD - linhaO == 1 && Math.abs(colunaD - colunaO) == 1) return true; //ele precisa estar indo na diagonal pra frente, n importa dir ou esq
+            if(linhaD - linhaO == 1 && Math.abs(colunaD - colunaO) == 1) return true; // ele precisa estar indo na diagonal pra frente, não importa dir ou esq
         
         } else {
             if(linhaD - linhaO == -1 && Math.abs(colunaD - colunaO) == 1) return true;
@@ -77,7 +74,7 @@ public class Peao extends Peca {
     private boolean posicoesValidas(int linhaO, char colunaO, int linhaD, char colunaD) {
         return (linhaO >= 1 && linhaO <= 8 && linhaD >= 1 && linhaD <= 8) &&
         (colunaO >= 'a' && colunaO <= 'h' && colunaD >= 'a' && colunaD <= 'h');
-    } //verifica se as linhas/colunas estao no intervalo valido
+    } // verifica se as linhas/colunas estao no intervalo valido
     
 }
    
