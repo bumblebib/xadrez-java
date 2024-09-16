@@ -2,7 +2,7 @@ package xadrez;
 
 public class Tabuleiro {
     
-    private Casa[][] casas = new Casa[8][8]; //uma matriz que é o tabuleiro
+    private Casa[][] casas = new Casa[8][8]; // uma matriz que é o tabuleiro
     private static final String ANSI_RESET = "\033[0m";
     private static final String ANSI_BOLD = "\033[1m";
     private static final String ANSI_BLUE = "\033[34m";
@@ -14,7 +14,7 @@ public class Tabuleiro {
                 casas[i][j] = new Casa(i + 1, (char)(j + 97));
             }
         }
-    } //criando casas vazias apenas, pq é pra criar as peças em jogo aparentemente
+    } // criando casas vazias apenas, pq é pra criar as peças em jogo aparentemente
     
     public void ocuparCasa(int linha, int coluna, Peca peca) {
         
@@ -35,8 +35,8 @@ public class Tabuleiro {
     } 
     
     public boolean noLimite(int linha, char coluna) {
-        if(linha < 1 || linha > 8) return false; //linha é válido de 1 a 8
-        if(coluna < 'a' || coluna > 'h') return false; //coluna de 'a' a 'h'
+        if(linha < 1 || linha > 8) return false; // linha é válido de 1 a 8
+        if(coluna < 'a' || coluna > 'h') return false; // coluna de 'a' a 'h'
         return true;
     }
     
