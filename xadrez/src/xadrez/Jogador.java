@@ -11,7 +11,7 @@ public class Jogador {
     private Scanner leitor = new Scanner(System.in);
 
     // construtor
-    public Jogador(String cor) { //tirando o recolhimento de info do jogador de Jogo
+    public Jogador(String cor) { 
         
         if(!cor.equals("Branco") && !cor.equals("Preto")) {
             throw new IllegalArgumentException("Essa cor nao e valida");
@@ -61,7 +61,7 @@ public class Jogador {
         return scanner.nextLine();
     }
 
-    //atualiza o estado da peça pra capturada
+    // atualiza o estado da peça pra capturada
     public void capturarPeca(Peca peca) {
         
         if(peca == null) throw new IllegalArgumentException("Essa peca nao existe");
