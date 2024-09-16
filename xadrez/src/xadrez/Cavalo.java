@@ -20,7 +20,7 @@ public class Cavalo extends Peca {
             
             if (dLinha == 2 && dColuna == 1 || dLinha == 1 && dColuna == 2) return true;
             return false;
-        } //cavalo se move em L, então obrigatoriamente ele vai se mover 2 casas em uma direção e mais 1 na outra
+        } // cavalo se move em L, então obrigatoriamente ele vai se mover 2 casas em uma direção e mais 1 na outra
         
         return false;
         
@@ -28,7 +28,7 @@ public class Cavalo extends Peca {
     
     @Override
     public String caminho(int linhaO, char colunaO, int linhaD, char colunaD) {
-        if(movimentoValido(linhaO, colunaO, linhaD, colunaD)) { //esse foi desgraçado hein
+        if(movimentoValido(linhaO, colunaO, linhaD, colunaD)) { 
             
             StringBuilder percurso = new StringBuilder();
             boolean flag = false;
@@ -64,7 +64,7 @@ public class Cavalo extends Peca {
                     percurso.append(--linhaO).append(colunaO);
                     percurso.append(--linhaO).append(colunaO);
                 }
-            } //nao consegui pensar num jeito inteligente e tive que fazer tudo separado
+            } 
             
             return percurso.toString();
         } 
@@ -81,6 +81,6 @@ public class Cavalo extends Peca {
     private boolean posicoesValidas(int linhaO, char colunaO, int linhaD, char colunaD) {
         return (linhaO >= 1 && linhaO <= 8 && linhaD >= 1 && linhaD <= 8) &&
         (colunaO >= 'a' && colunaO <= 'h' && colunaD >= 'a' && colunaD <= 'h');
-    } //verifica se as linhas/colunas estao no intervalo valido
+    } // verifica se as linhas/colunas estao no intervalo valido
     
 }
