@@ -18,8 +18,8 @@ public class Dama extends Peca {
             int dLinha = Math.abs(linhaO - linhaD);
             int dColuna = Math.abs(colunaO - colunaD);
             
-            if(dLinha != dColuna && linhaO != linhaD && colunaO != colunaD) return false; //a dama pode se mover quantas casas quiser, pra onde quiser
-            //mas temos que checar a diagonal
+            if(dLinha != dColuna && linhaO != linhaD && colunaO != colunaD) return false; // a dama pode se mover quantas casas quiser, pra onde quiser
+            // mas é preciso checar a diagonal
             
             return true;
             
@@ -31,20 +31,20 @@ public class Dama extends Peca {
     public String caminho(int linhaO, char colunaO, int linhaD, char colunaD) {
         if(movimentoValido(linhaO, colunaO, linhaD, colunaD)) {
             
-            StringBuilder percurso = new StringBuilder(); //isso é concatenar String
-            percurso.append(linhaO).append(colunaO); //colocando a origem
+            StringBuilder percurso = new StringBuilder(); // concatenar String
+            percurso.append(linhaO).append(colunaO); // colocando a origem
             
-            while(linhaO != linhaD || colunaO != colunaD) { //enquanto não chegar na posição final tanto na linha qaunto na coluna
+            while(linhaO != linhaD || colunaO != colunaD) { // enquanto não chegar na posição final tanto na linha qaunto na coluna
                 if (linhaO < linhaD) {
-                    percurso.append(++linhaO); //se a origem for menor que o destino, incrementa até se igualarem
+                    percurso.append(++linhaO); // se a origem for menor que o destino, incrementa até se igualarem
                 } else if (linhaO > linhaD) {
-                    percurso.append(--linhaO); //se a origem for maior, diminui até ficar igual
+                    percurso.append(--linhaO); // se a origem for maior, diminui até ficar igual
                 } else {
-                    percurso.append(linhaO); //se já forem iguais, repete
+                    percurso.append(linhaO); // se já forem iguais, repete
                 }
                 
                 if (colunaO < colunaD) {
-                    percurso.append(++colunaO); //mesma lógica pra coluna
+                    percurso.append(++colunaO); // mesma lógica pra coluna
                 } else if (colunaO > colunaD) {
                     percurso.append(--colunaO);
                 } else {
@@ -54,7 +54,7 @@ public class Dama extends Peca {
                 
             }
             
-            return percurso.toString(); //transforma de volta pra String normal
+            return percurso.toString(); // transforma de volta pra String normal
         }
         
         return "";
@@ -69,7 +69,7 @@ public class Dama extends Peca {
     private boolean posicoesValidas(int linhaO, char colunaO, int linhaD, char colunaD) {
         return (linhaO >= 1 && linhaO <= 8 && linhaD >= 1 && linhaD <= 8) &&
         (colunaO >= 'a' && colunaO <= 'h' && colunaD >= 'a' && colunaD <= 'h');
-    } //verifica se as linhas/colunas estao no intervalo valido
+    } // verifica se as linhas/colunas estao no intervalo valido
 
     
 }
